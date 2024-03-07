@@ -11,6 +11,26 @@ if(CONFIG_OPENTHREAD_ENABLED OR CONFIG_IDF_DOC_BUILD OR CONFIG_OPENTHREAD_SPINEL
         "openthread/include")
 endif()
 
+# --- Begin CSE299A Modifications ---
+
+# I learned how to use CMake variables from the Stack Overflow post:
+# https://stackoverflow.com/a/31044116
+
+if(CONFIG_CSE299A_CIPHER_SUITE EQUAL "2")
+
+    set(ascon_file_loc "openthread/src/core/crypto/ascon128av12_esp32")
+
+elseif(CONFIG_CSE299A_CIPHER_SUITE EQUAL "3")
+    
+    set(ascon_file_loc "openthread/src/core/crypto/ascon128av12_ref")
+
+else()
+
+    set(ascon_file_loc "")
+
+endif()
+# --- Finish CSE299A Modifications ---
+
 if(CONFIG_OPENTHREAD_ENABLED)
 
     set(private_include_dirs
@@ -220,6 +240,16 @@ elseif(CONFIG_OPENTHREAD_SPINEL_ONLY)
     list(APPEND exclude_srcs ${exclude_srcs_list})
 
 endif()
+
+# --- CSE 299A Modifications ---
+if (CONFIG_CSE299A_CIPHER_SUITE GREATER_EQUAL "2")
+
+  list(APPEND src_dirs ${ascon_file_loc})
+
+  list(APPEND src_dirs "openthread/src/core/crypto/cse299a_ascon")
+
+endif()
+# --- CSE 299A Modifications ---
 
 execute_process(
     COMMAND git rev-parse --short HEAD

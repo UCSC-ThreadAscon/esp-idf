@@ -5,6 +5,7 @@
  */
 
 #include "esp_openthread_radio.h"
+#include "cse299a_encryption_flags.h"
 
 #include "error.h"
 #include "esp_err.h"
@@ -315,7 +316,14 @@ otError otPlatRadioTransmit(otInstance *aInstance, otRadioFrame *aFrame)
             esp_ieee802154_get_extended_address(s_security_addr);
         }
         memcpy(s_security_key, s_current_key.mKeyMaterial.mKey.m8, sizeof(s_current_key.mKeyMaterial.mKey.m8));
+
+#if CSE299A_ENCRYPT_DEBUG
+        dataEncryptPrintTransmitted();
+#endif // CSE299A_ENCRYPT_DEBUG
+
+#if AES_DATA_ENCRYPT
         esp_ieee802154_set_transmit_security(&aFrame->mPsdu[-1], s_security_key, s_security_addr);
+#endif // AES_DATA_ENCRYPT
     }
 
     if (aFrame->mInfo.mTxInfo.mTxDelay != 0) {
