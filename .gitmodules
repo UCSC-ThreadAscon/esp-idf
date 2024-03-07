@@ -106,7 +106,7 @@
 
 [submodule "components/openthread/openthread"]
 	path = components/openthread/openthread
-	url = ../../espressif/openthread.git
+	url = git@github.com:UCSC-ThreadAscon/openthread.git
 
 [submodule "components/bt/controller/lib_esp32c3_family"]
 	path = components/bt/controller/lib_esp32c3_family
