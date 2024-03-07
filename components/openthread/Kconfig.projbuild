@@ -1,0 +1,28 @@
+#
+# I use the following resource to learn how to create KConfig
+# configurations:
+# https://medium.com/@bhautik.markeye/esp-idf-configuration-how-to-add-custom-configuration-in-project-config-728f81b8d0d8.
+#
+
+menu "CSE 299A OpenThread Encryption"
+
+  config CSE299A_CIPHER_SUITE
+    int "Determines which cipher suite OpenThread should use."
+    default 0
+    range 0 3
+    help
+      Option "0" enables AES encryption (default).
+      Option "1" disables all encryption.
+      Option "2" enables the ESP32 optimized version of ASCON-128a.
+      Option "3" enables the reference implementation of ASCON-128a.
+
+  config CSE299A_DEBUG_ENABLED
+    int "Enable debugging print statements."
+    default 0
+    range 0 1
+    help
+      Set to option "1" to enable debugging print statements.
+      By default, debugging print statements are disabled
+      (i.e. option "0").
+
+  endmenu
