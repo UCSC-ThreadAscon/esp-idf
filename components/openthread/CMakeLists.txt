@@ -11,16 +11,16 @@ if(CONFIG_OPENTHREAD_ENABLED OR CONFIG_IDF_DOC_BUILD OR CONFIG_OPENTHREAD_SPINEL
         "openthread/include")
 endif()
 
-# --- Begin CSE299A Modifications ---
+# --- Begin Thread Ascon Modifications ---
 
 # I learned how to use CMake variables from the Stack Overflow post:
 # https://stackoverflow.com/a/31044116
 
-if(CONFIG_CSE299A_CIPHER_SUITE EQUAL "2")
+if(CONFIG_THREAD_ASCON_CIPHER_SUITE EQUAL "2")
 
     set(ascon_file_loc "openthread/src/core/crypto/ascon128av12_esp32")
 
-elseif(CONFIG_CSE299A_CIPHER_SUITE EQUAL "3")
+elseif(CONFIG_THREAD_ASCON_CIPHER_SUITE EQUAL "3")
     
     set(ascon_file_loc "openthread/src/core/crypto/ascon128av12_ref")
 
@@ -29,7 +29,7 @@ else()
     set(ascon_file_loc "")
 
 endif()
-# --- Finish CSE299A Modifications ---
+# --- Finish CSEThread Ascon Modifications ---
 
 if(CONFIG_OPENTHREAD_ENABLED)
 
@@ -153,12 +153,12 @@ if(CONFIG_OPENTHREAD_ENABLED)
             "src/port/esp_uart_spinel_interface.cpp"
             )
     elseif(CONFIG_OPENTHREAD_RADIO_SPINEL_UART OR CONFIG_OPENTHREAD_RADIO_SPINEL_SPI)
-        # --- BEGIN CSE 299A Modifications ---
+        # --- BEGIN Thread Ascon Modifications ---
         list(APPEND exclude_srcs
             "src/port/esp_openthread_radio.c"
             "src/port/esp_openthread_sleep.c"
-            "src/port/cse299a_encryption_debug.c")
-        # --- END CSE 299A Modifications ---
+            "src/port/cseThread Ascon_encryption_debug.c")
+        # --- END Thread Ascon Modifications ---
     endif()
 
     if(CONFIG_OPENTHREAD_BORDER_ROUTER)
@@ -244,15 +244,15 @@ elseif(CONFIG_OPENTHREAD_SPINEL_ONLY)
 
 endif()
 
-# --- Begin CSE 299A Modifications ---
-if (CONFIG_CSE299A_CIPHER_SUITE GREATER_EQUAL "2")
+# --- Begin Thread Ascon Modifications ---
+if (CONFIG_THREAD_ASCON_CIPHER_SUITE GREATER_EQUAL "2")
 
   list(APPEND src_dirs ${ascon_file_loc})
 
   list(APPEND src_dirs "openthread/src/core/crypto/thread_ascon")
 
 endif()
-# --- Finished CSE 299A Modifications ---
+# --- Finished Thread Ascon Modifications ---
 
 execute_process(
     COMMAND git rev-parse --short HEAD

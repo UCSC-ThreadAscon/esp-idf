@@ -31,7 +31,8 @@
  * Helped me realize that enums operate after compile time, and thus,
  * will lead to buggy behavior when used with preprocessor directives.
 */
-#define CIPHER_SUITE CONFIG_CSE299A_CIPHER_SUITE
+#define CIPHER_SUITE CONFIG_THREAD_ASCON_CIPHER_SUITE
+#define CSE299A_ENCRYPT_DEBUG CONFIG_THREAD_ASCON_DEBUG_ENABLED
 
 #define AES 0
 #define NONE 1
@@ -51,8 +52,6 @@
 #define ASCON_MLE_DECRYPT ASCON_ENABLED
 
 #define NO_ENCRYPT_DECRYPT (CIPHER_SUITE == NONE)
-
-#define CSE299A_ENCRYPT_DEBUG CONFIG_CSE299A_DEBUG_ENABLED
 
 void dataEncryptPrintTransmitted();
 void dataDecryptPrintReceived();

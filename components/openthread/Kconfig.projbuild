@@ -4,9 +4,9 @@
 # https://medium.com/@bhautik.markeye/esp-idf-configuration-how-to-add-custom-configuration-in-project-config-728f81b8d0d8.
 #
 
-menu "CSE 299A OpenThread Encryption"
+menu "Ascon-OpenThread Encryption"
 
-  config CSE299A_CIPHER_SUITE
+  config THREAD_ASCON_CIPHER_SUITE
     int "Determines which cipher suite OpenThread should use."
     default 0
     range 0 3
@@ -16,7 +16,7 @@ menu "CSE 299A OpenThread Encryption"
       Option "2" enables the ESP32 optimized version of ASCON-128a.
       Option "3" enables the reference implementation of ASCON-128a.
 
-  config CSE299A_DEBUG_ENABLED
+  config THREAD_ASCON_DEBUG_ENABLED
     int "Enable debugging print statements."
     default 0
     range 0 1
