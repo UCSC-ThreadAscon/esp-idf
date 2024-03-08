@@ -317,9 +317,9 @@ otError otPlatRadioTransmit(otInstance *aInstance, otRadioFrame *aFrame)
         }
         memcpy(s_security_key, s_current_key.mKeyMaterial.mKey.m8, sizeof(s_current_key.mKeyMaterial.mKey.m8));
 
-#if CSE299A_ENCRYPT_DEBUG
+#if THREAD_ASCON_DEBUG
         dataEncryptPrintTransmitted();
-#endif // CSE299A_ENCRYPT_DEBUG
+#endif // THREAD_ASCON_DEBUG
 
 #if AES_DATA_ENCRYPT
         esp_ieee802154_set_transmit_security(&aFrame->mPsdu[-1], s_security_key, s_security_addr);
