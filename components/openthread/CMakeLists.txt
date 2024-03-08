@@ -153,9 +153,12 @@ if(CONFIG_OPENTHREAD_ENABLED)
             "src/port/esp_uart_spinel_interface.cpp"
             )
     elseif(CONFIG_OPENTHREAD_RADIO_SPINEL_UART OR CONFIG_OPENTHREAD_RADIO_SPINEL_SPI)
+        # --- BEGIN CSE 299A Modifications ---
         list(APPEND exclude_srcs
             "src/port/esp_openthread_radio.c"
-            "src/port/esp_openthread_sleep.c")
+            "src/port/esp_openthread_sleep.c"
+            "src/port/cse299a_encryption_debug.c")
+        # --- END CSE 299A Modifications ---
     endif()
 
     if(CONFIG_OPENTHREAD_BORDER_ROUTER)
@@ -241,7 +244,7 @@ elseif(CONFIG_OPENTHREAD_SPINEL_ONLY)
 
 endif()
 
-# --- CSE 299A Modifications ---
+# --- Begin CSE 299A Modifications ---
 if (CONFIG_CSE299A_CIPHER_SUITE GREATER_EQUAL "2")
 
   list(APPEND src_dirs ${ascon_file_loc})
@@ -249,7 +252,7 @@ if (CONFIG_CSE299A_CIPHER_SUITE GREATER_EQUAL "2")
   list(APPEND src_dirs "openthread/src/core/crypto/cse299a_ascon")
 
 endif()
-# --- CSE 299A Modifications ---
+# --- Finished CSE 299A Modifications ---
 
 execute_process(
     COMMAND git rev-parse --short HEAD
