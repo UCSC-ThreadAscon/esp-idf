@@ -11,8 +11,8 @@
  *  - `openthread/src/core/mac/mac_frame_cse299a_debug.cpp`
  *  - `openthread/src/core/thread/mle_cse299a_debug.cpp`
 */
-#ifndef CSE299A_ENCRYPT_FLAGS_H_
-#define CSE299A_ENCRYPT_FLAGS_H_
+#ifndef THREAD_ASCON_ENCRYPT_FLAGS_H_
+#define THREAD_ASCON_ENCRYPT_FLAGS_H_
 
 /**
  * Need "sdkconfig.h" in order to use Kconfig macros defined by
@@ -58,4 +58,4 @@ void dataDecryptPrintReceived();
 void mleEncryptPrintTransmitted();
 void mleDecryptPrintReceived();
 
-#endif // CSE299A_ENCRYPT_FLAGS_H_
+#endif // THREAD_ASCON_ENCRYPT_FLAGS_H_

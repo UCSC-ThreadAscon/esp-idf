@@ -5,7 +5,7 @@
  */
 
 #include "esp_openthread_radio.h"
-#include "cse299a_encryption_flags.h"
+#include "thread_ascon_encryption_flags.h"
 
 #include "error.h"
 #include "esp_err.h"
