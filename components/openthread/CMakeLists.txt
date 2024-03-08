@@ -249,7 +249,7 @@ if (CONFIG_CSE299A_CIPHER_SUITE GREATER_EQUAL "2")
 
   list(APPEND src_dirs ${ascon_file_loc})
 
-  list(APPEND src_dirs "openthread/src/core/crypto/cse299a_ascon")
+  list(APPEND src_dirs "openthread/src/core/crypto/thread_ascon")
 
 endif()
 # --- Finished CSE 299A Modifications ---
