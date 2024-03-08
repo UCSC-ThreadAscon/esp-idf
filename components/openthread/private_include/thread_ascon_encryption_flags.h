@@ -1,15 +1,6 @@
 /**
  * This file defines the flags that will be used to enable and disable
  * encryption in the OpenThread source code.
- *
- * The files that utilizes these flags are as follows:
- *  - `src/port/esp_openthread_radio.c`
- *  - `openthread/src/core/mac/mac_frame.cpp`
- *
- * The function definitions for this file are in
- *  - `src/port/cse299a_encryption_debug.c`
- *  - `openthread/src/core/mac/mac_frame_cse299a_debug.cpp`
- *  - `openthread/src/core/thread/mle_cse299a_debug.cpp`
 */
 #ifndef THREAD_ASCON_ENCRYPT_FLAGS_H_
 #define THREAD_ASCON_ENCRYPT_FLAGS_H_
