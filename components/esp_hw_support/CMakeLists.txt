@@ -140,7 +140,7 @@ if(NOT BOOTLOADER_BUILD)
                     APPEND PROPERTY INTERFACE_LINK_LIBRARIES "-u rv_core_critical_regs_restore")
     endif()
 
-    if(CONFIG_SOC_MODEM_CLOCK_IS_INDEPENDENT)
+    if(CONFIG_SOC_MODEM_CLOCK_IS_INDEPENDENT AND CONFIG_SOC_MODEM_CLOCK_SUPPORTED)
         list(APPEND srcs "modem_clock.c")
     endif()
 
@@ -165,9 +165,7 @@ if(NOT BOOTLOADER_BUILD)
     if(CONFIG_IDF_TARGET_ESP32P4)
         list(REMOVE_ITEM srcs
                 "sleep_cpu.c"         # TODO: IDF-7528, IDF-7529
-                "sleep_modes.c"       # TODO: IDF-7528, IDF-7529
                 "sleep_wake_stub.c"   # TODO: IDF-7529
-                "sleep_gpio.c"        # TODO: IDF-7528, IDF-7529
             )
     endif()
     if(CONFIG_IDF_TARGET_ESP32C5)

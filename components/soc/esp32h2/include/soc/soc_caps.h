@@ -71,6 +71,7 @@
 #define SOC_RNG_SUPPORTED               1
 #define SOC_LIGHT_SLEEP_SUPPORTED       1
 #define SOC_DEEP_SLEEP_SUPPORTED        1
+#define SOC_MODEM_CLOCK_SUPPORTED       1
 
 /*-------------------------- XTAL CAPS ---------------------------------------*/
 #define SOC_XTAL_SUPPORT_32M            1
@@ -213,12 +214,14 @@
 
 // The Clock Out singnal is route to the pin by GPIO matrix
 #define SOC_GPIO_CLOCKOUT_BY_GPIO_MATRIX    (1)
+#define SOC_CLOCKOUT_HAS_SOURCE_GATE         (1)
 
 /*-------------------------- RTCIO CAPS --------------------------------------*/
 /* No dedicated LP_IOMUX subsystem on ESP32-H2. LP functions are still supported
  * for hold, wake & 32kHz crystal functions - via LP_AON registers */
 #define SOC_RTCIO_PIN_COUNT         (8U)
 #define SOC_RTCIO_HOLD_SUPPORTED    (1)
+#define SOC_RTCIO_VALID_RTCIO_MASK  (0x7F80)
 
 /*-------------------------- Dedicated GPIO CAPS -----------------------------*/
 #define SOC_DEDIC_GPIO_OUT_CHANNELS_NUM (8) /*!< 8 outward channels on each CPU core */
@@ -518,6 +521,9 @@
 #define SOC_TEMPERATURE_SENSOR_SUPPORT_XTAL                   (1)
 #define SOC_TEMPERATURE_SENSOR_INTR_SUPPORT                   (1)
 #define SOC_TEMPERATURE_SENSOR_SUPPORT_ETM                    (1)
+
+/*--------------------------------- RNG CAPS --------------------------------------------*/
+#define SOC_RNG_CLOCK_IS_INDEPENDENT                          (1)
 
 /*---------------------------------- Bluetooth CAPS ----------------------------------*/
 #define SOC_BLE_SUPPORTED               (1)    /*!< Support Bluetooth Low Energy hardware */

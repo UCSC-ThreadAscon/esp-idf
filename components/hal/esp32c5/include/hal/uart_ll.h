@@ -9,6 +9,7 @@
 
 #pragma once
 
+#include "sdkconfig.h"  // TODO: IDF-9197 remove
 #include "esp_attr.h"
 #include "hal/misc.h"
 #include "hal/uart_types.h"
@@ -33,7 +34,7 @@ extern "C" {
 
 #define UART_LL_REG_FIELD_BIT_SHIFT(hw) (((hw) == &LP_UART) ? 3 : 0)
 
-#define UART_LL_MIN_WAKEUP_THRESH (2)
+#define UART_LL_MIN_WAKEUP_THRESH (3)
 #define UART_LL_INTR_MASK         (0x7ffff) //All interrupt mask
 
 #define UART_LL_FSM_IDLE                       (0x0)
@@ -166,7 +167,12 @@ FORCE_INLINE_ATTR void lp_uart_ll_set_baudrate(uart_dev_t *hw, uint32_t baud, ui
     // an integer part and a fractional part.
     hw->clkdiv_sync.clkdiv_int = clk_div >> 4;
     hw->clkdiv_sync.clkdiv_frag = clk_div & 0xf;
+#if CONFIG_IDF_TARGET_ESP32C5_BETA3_VERSION
     HAL_FORCE_MODIFY_U32_REG_FIELD(hw->clk_conf, sclk_div_num, sclk_div - 1);
+#elif CONFIG_IDF_TARGET_ESP32C5_MP_VERSION
+    // TODO: [ESP32c5] IDF-8633 Not found sclk_div_num for LP_UART
+    abort();
+#endif
     uart_ll_update(hw);
 }
 
@@ -431,7 +437,12 @@ FORCE_INLINE_ATTR uint32_t uart_ll_get_baudrate(uart_dev_t *hw, uint32_t sclk_fr
     div_reg.val = hw->clkdiv_sync.val;
     int sclk_div;
     if ((hw) == &LP_UART) {
+#if CONFIG_IDF_TARGET_ESP32C5_BETA3_VERSION
         sclk_div = HAL_FORCE_READ_U32_REG_FIELD(hw->clk_conf, sclk_div_num) + 1;
+#elif CONFIG_IDF_TARGET_ESP32C5_MP_VERSION
+        // TODO: [ESP32c5] IDF-8633 Not found sclk_div_num for LP_UART
+        abort();
+#endif
     } else {
         sclk_div = UART_LL_PCR_REG_U32_GET(hw, sclk_conf, sclk_div_num) + 1;
     }
@@ -886,6 +897,7 @@ FORCE_INLINE_ATTR void uart_ll_set_dtr_active_level(uart_dev_t *hw, int level)
  */
 FORCE_INLINE_ATTR void uart_ll_set_wakeup_thrd(uart_dev_t *hw, uint32_t wakeup_thrd)
 {
+    // System would wakeup when the number of positive edges of RxD signal is larger than or equal to (UART_ACTIVE_THRESHOLD+3)
     hw->sleep_conf2.active_threshold = wakeup_thrd - UART_LL_MIN_WAKEUP_THRESH;
 }
 
