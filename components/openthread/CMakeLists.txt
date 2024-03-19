@@ -255,11 +255,11 @@ if (CONFIG_THREAD_ASCON_CIPHER_SUITE GREATER_EQUAL "2")
 
    if (CONFIG_THREAD_ASCON_CIPER_SUITE EQUAL "4")
 
-      list(APPEND src_dirs "openthread/src/core/crypto/thread_ascon")
+      list(APPEND src_dirs "openthread/src/core/crypto/thread_libascon")
   
    else()
 
-      list(APPEND src_dirs "openthread/src/core/crypto/thread_libascon")
+      list(APPEND src_dirs "openthread/src/core/crypto/thread_ascon")
   
    endif()
 
