@@ -253,7 +253,7 @@ if (CONFIG_THREAD_ASCON_CIPHER_SUITE GREATER_EQUAL "2")
 
   list(APPEND src_dirs ${ascon_file_loc})
 
-   if (CONFIG_THREAD_ASCON_CIPER_SUITE EQUAL "4")
+   if (CONFIG_THREAD_ASCON_CIPHER_SUITE EQUAL "4")
 
       list(APPEND src_dirs "openthread/src/core/crypto/thread_libascon")
   
