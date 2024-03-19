@@ -9,12 +9,13 @@ menu "Ascon-OpenThread Encryption"
   config THREAD_ASCON_CIPHER_SUITE
     int "Determines which cipher suite OpenThread should use."
     default 0
-    range 0 3
+    range 0 4
     help
       Option "0" enables AES encryption (default).
       Option "1" disables all encryption.
       Option "2" enables the ESP32 optimized version of ASCON-128a.
       Option "3" enables the reference implementation of ASCON-128a.
+      Option "4" enables the ASCON-128a implemenation from LibAscon, which uses variable tag length.
 
   config THREAD_ASCON_DEBUG_ENABLED
     int "Enable debugging print statements."
