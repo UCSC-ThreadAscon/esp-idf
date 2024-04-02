@@ -23,7 +23,6 @@
  * will lead to buggy behavior when used with preprocessor directives.
 */
 #define CIPHER_SUITE CONFIG_THREAD_ASCON_CIPHER_SUITE
-#define THREAD_ASCON_DEBUG CONFIG_THREAD_ASCON_DEBUG_ENABLED
 
 #define AES 0
 #define NONE 1

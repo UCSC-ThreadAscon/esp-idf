@@ -318,10 +318,6 @@ otError otPlatRadioTransmit(otInstance *aInstance, otRadioFrame *aFrame)
         }
         memcpy(s_security_key, s_current_key.mKeyMaterial.mKey.m8, sizeof(s_current_key.mKeyMaterial.mKey.m8));
 
-#if THREAD_ASCON_DEBUG
-        dataEncryptPrintTransmitted();
-#endif // THREAD_ASCON_DEBUG
-
 #if AES_DATA_ENCRYPT
         esp_ieee802154_set_transmit_security(&aFrame->mPsdu[-1], s_security_key, s_security_addr);
 #endif // AES_DATA_ENCRYPT
