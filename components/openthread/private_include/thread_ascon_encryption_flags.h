@@ -46,9 +46,4 @@
 
 #define NO_ENCRYPT_DECRYPT (CIPHER_SUITE == NONE)
 
-void dataEncryptPrintTransmitted();
-void dataDecryptPrintReceived();
-void mleEncryptPrintTransmitted();
-void mleDecryptPrintReceived();
-
 #endif // THREAD_ASCON_ENCRYPT_FLAGS_H_
