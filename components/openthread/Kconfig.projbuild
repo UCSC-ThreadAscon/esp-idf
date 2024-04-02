@@ -18,13 +18,4 @@ menu "Ascon-OpenThread Encryption"
       Option "4" enables the ASCON-128a implemenation from LibAscon, which uses variable tag length.
       Option "5" enables the ASCON-128 implementation of LibAscon, which uses variable tag length.
 
-  config THREAD_ASCON_DEBUG_ENABLED
-    int "Enable debugging print statements."
-    default 0
-    range 0 1
-    help
-      Set to option "1" to enable debugging print statements.
-      By default, debugging print statements are disabled
-      (i.e. option "0").
-
   endmenu
