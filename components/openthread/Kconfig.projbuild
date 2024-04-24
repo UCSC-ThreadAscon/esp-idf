@@ -21,7 +21,7 @@ menu "Ascon-OpenThread Encryption"
   config THREAD_ASCON_HEX_DUMP
     int "Determine whether or not to enable hex dump printing."
     default 0
-    range 0 5
+    range 0 2
     help
       Toggles hex dump printing of the key, nonce, associated, data and
       payload/ciphertext to verify that the ASCON implementations are successfully
@@ -30,9 +30,9 @@ menu "Ascon-OpenThread Encryption"
       Note that this option does NOTHING when AES is used.
 
       Option "0" disables ASCON hex dump.
-      Option "1" enables hex dump for ASCON-128 Mac Layer encryption.
-      Option "2" enables hex dump for ASCON-128 MLE encryption.
-      Option "3" enables hex dump for ASCON-128a Mac Layer encryption.
-      Option "4" enables hex dump for ASCON-128a MLE encryption.
+      Option "1" enables hex dump for Mac Layer encryption for both
+      LibAscon-128A and LibAscon-128.
+      Option "2" enables hex dump for MLE encryption for both
+      LibAscon-128A and LibAscon-128.
 
   endmenu
