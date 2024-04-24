@@ -23,9 +23,9 @@ menu "Ascon-OpenThread Encryption"
     default 0
     range 0 2
     help
-      Toggles hex dump printing of the key, nonce, associated, data and
-      payload/ciphertext to verify that the ASCON implementations are successfully
-      working.
+      Toggles hex dump printing of the key, nonce, associated, data, 
+      payload/ciphertex, and tag (if relevant) to verify that the ASCON
+      implementations are successfully working.
 
       Note that this option does NOTHING when AES is used.
 
