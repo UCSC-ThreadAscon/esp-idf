@@ -24,6 +24,28 @@
 #include "openthread/platform/radio.h"
 #include "platform/exit_code.h"
 
+/**
+ * --- UCSC ThreadAscon Notes ----
+ *
+ * In order for network time synchronization to work, the "otPlatTimeGetXtalAccuracy()"
+ * MUST be defined. This function is already defined for non-Border Router FTDs
+ * in "esp_openthread_radio.c".
+ *
+ * Border routers DO NOT use "port/esp_openthread_radio.c", and instead use
+ * this file ("esp_openthread_radio_spinel.c"). However, the API needed Time Synchronization
+ * is never given in this file. As a result, I had to bring the code over that is used
+ * to include the Network Time Sychronization API (in "esp_openthread_radio.c"),
+ * into this file. By doing so, I give Border Router the ability to utilize Network
+ * Time Synchronization.
+ */
+#include "openthread/platform/time.h"
+#define ESP_OPENTHREAD_XTAL_ACCURACY CONFIG_OPENTHREAD_XTAL_ACCURACY
+
+uint16_t otPlatTimeGetXtalAccuracy(void)
+{
+    return ESP_OPENTHREAD_XTAL_ACCURACY;
+}
+
 using ot::Spinel::RadioSpinel;
 using esp::openthread::SpinelInterfaceAdapter;
 
