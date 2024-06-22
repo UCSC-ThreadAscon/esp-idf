@@ -735,7 +735,7 @@ void IRAM_ATTR esp_ieee802154_transmit_sfd_done(uint8_t *frame)
     }
 #endif
 
-#if OPENTHREAD_CONFIG_TIME_SYNC_ENABLE
+#if OPENTHREAD_CONFIG_TIME_SYNC_ENABLE || OT_RCP_ENABLE_TIME_SYNC
     if (frame == (uint8_t *)&s_transmit_psdu && s_transmit_frame.mInfo.mTxInfo.mIeInfo->mTimeIeOffset != 0)
     {
         uint8_t *p_time_ie = s_transmit_frame.mPsdu + s_transmit_frame.mInfo.mTxInfo.mIeInfo->mTimeIeOffset;
@@ -750,7 +750,7 @@ void IRAM_ATTR esp_ieee802154_transmit_sfd_done(uint8_t *frame)
             *(++p_time_ie) = (uint8_t)(time & 0xff);
         }
     }
-#endif // OPENTHREAD_CONFIG_TIME_SYNC_ENABLE
+#endif // OPENTHREAD_CONFIG_TIME_SYNC_ENABLE || OT_RCP_ENABLE_TIME_SYNC
 }
 
 void IRAM_ATTR esp_ieee802154_energy_detect_done(int8_t power)
