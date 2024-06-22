@@ -162,8 +162,7 @@ if(CONFIG_OPENTHREAD_ENABLED)
         # --- BEGIN Thread Ascon Modifications ---
         list(APPEND exclude_srcs
             "src/port/esp_openthread_radio.c"
-            "src/port/esp_openthread_sleep.c"
-            "src/port/cseThread Ascon_encryption_debug.c")
+            "src/port/esp_openthread_sleep.c")
         # --- END Thread Ascon Modifications ---
     endif()
 
