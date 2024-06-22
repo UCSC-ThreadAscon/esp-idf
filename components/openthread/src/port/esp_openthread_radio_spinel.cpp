@@ -28,13 +28,13 @@
  * --- UCSC ThreadAscon Notes ----
  *
  * In order for network time synchronization to work, the "otPlatTimeGetXtalAccuracy()"
- * MUST be defined. This function is already defined for non-Border Router FTDs
+ * function MUST be defined. This function is already defined for non-Border Router FTDs
  * in "esp_openthread_radio.c".
  *
- * Border routers DO NOT use "port/esp_openthread_radio.c", and instead use
- * this file ("esp_openthread_radio_spinel.c"). However, the API needed Time Synchronization
- * is never given in this file. As a result, I had to bring the code over that is used
- * to include the Network Time Sychronization API (in "esp_openthread_radio.c"),
+ * The ESP Thread Borrder Router DO NOT use "port/esp_openthread_radio.c" (only the RCP does),
+ * and instead uses this file ("esp_openthread_radio_spinel.c"). However, the API needed
+ * Time Synchronization is never given in this file. As a result, I had to bring the code over
+ * that is used to include the Network Time Sychronization API (in "esp_openthread_radio.c"),
  * into this file. By doing so, I give Border Router the ability to utilize Network
  * Time Synchronization.
  */
