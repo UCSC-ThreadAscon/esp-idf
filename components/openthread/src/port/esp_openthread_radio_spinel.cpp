@@ -32,7 +32,7 @@
  * in "esp_openthread_radio.c".
  *
  * The ESP Thread Borrder Router DO NOT use "port/esp_openthread_radio.c" (only the RCP does),
- * and instead uses this file ("esp_openthread_radio_spinel.c"). However, the API needed
+ * and instead uses this file ("esp_openthread_radio_spinel.cpp"). However, the API needed
  * Time Synchronization is never given in this file. As a result, I had to bring the code over
  * that is used to include the Network Time Sychronization API (in "esp_openthread_radio.c"),
  * into this file. By doing so, I give Border Router the ability to utilize Network
