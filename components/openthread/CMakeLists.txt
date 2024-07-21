@@ -331,3 +331,37 @@ if(CONFIG_OPENTHREAD_ENABLED OR CONFIG_OPENTHREAD_SPINEL_ONLY)
     endif()
 
 endif()
+
+# --- Begin Thread Ascon Modifications ---
+message("---------------------------------------------------------------------------------")
+message("")
+
+if(CONFIG_THREAD_ASCON_CIPHER_SUITE EQUAL 0)
+
+    message("OpenThread is using AES.")
+
+elseif(CONFIG_THREAD_ASCON_CIPHER_SUITE EQUAL 1)
+
+    message("OpenThread is using No Encryption (plaintext).")
+
+elseif(CONFIG_THREAD_ASCON_CIPHER_SUITE EQUAL 2)
+
+    message("OpenThread is using the ESP32 Optimized implementation of ASCON-128a.")
+
+elseif(CONFIG_THREAD_ASCON_CIPHER_SUITE EQUAL 3)
+
+    message("OpenThread is using the Reference implementation of ASCON-128a.")
+    
+
+elseif(CONFIG_THREAD_ASCON_CIPHER_SUITE EQUAL 4)
+
+    message("OpenThread is using the LibAscon implementation of ASCON-128a.")
+
+elseif(CONFIG_THREAD_ASCON_CIPHER_SUITE EQUAL 5)
+
+    message("OpenThread is using the LibAscon implementation of ASCON-128.")
+
+endif()
+message("")
+message("---------------------------------------------------------------------------------")
+# --- End Thread Ascon Modifications ---
