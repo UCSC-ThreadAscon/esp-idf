@@ -16,15 +16,15 @@ endif()
 # I learned how to use CMake variables from the Stack Overflow post:
 # https://stackoverflow.com/a/31044116
 
-if(CONFIG_THREAD_ASCON_CIPHER_SUITE EQUAL "2")
+if(CONFIG_THREAD_ASCON_CIPHER_SUITE EQUAL 2)
 
     set(ascon_file_loc "openthread/src/core/crypto/ascon128av12_esp32")
 
-elseif(CONFIG_THREAD_ASCON_CIPHER_SUITE EQUAL "3")
+elseif(CONFIG_THREAD_ASCON_CIPHER_SUITE EQUAL 3)
     
     set(ascon_file_loc "openthread/src/core/crypto/ascon128av12_ref")
 
-elseif(CONFIG_THREAD_ASCON_CIPHER_SUITE GREATER_EQUAL "4")
+elseif(CONFIG_THREAD_ASCON_CIPHER_SUITE GREATER_EQUAL 4)
 
     set(ascon_file_loc "openthread/src/core/crypto/libascon")
 
@@ -250,11 +250,11 @@ elseif(CONFIG_OPENTHREAD_SPINEL_ONLY)
 endif()
 
 # --- Begin Thread Ascon Modifications ---
-if (CONFIG_THREAD_ASCON_CIPHER_SUITE GREATER_EQUAL "2")
+if (CONFIG_THREAD_ASCON_CIPHER_SUITE GREATER_EQUAL 2)
 
   list(APPEND src_dirs ${ascon_file_loc})
 
-   if (CONFIG_THREAD_ASCON_CIPHER_SUITE GREATER_EQUAL "4")
+   if (CONFIG_THREAD_ASCON_CIPHER_SUITE GREATER_EQUAL 4)
 
       list(APPEND src_dirs "openthread/src/core/crypto/thread_libascon")
   
