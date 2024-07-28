@@ -65,9 +65,12 @@ static otRadioFrame s_ack_frame;
 static int s_ed_power;
 static esp_ieee802154_tx_error_t s_tx_error;
 static int s_radio_event_fd = -1;
-static bool s_diag_mode = false;
 static const char *s_radio_workflow = "radio";
 static uint8_t s_txrx_events;
+
+#if CONFIG_OPENTHREAD_DIAG
+static bool s_diag_mode = false;
+#endif
 
 #if OPENTHREAD_CONFIG_MAC_HEADER_IE_SUPPORT
 static otRadioIeInfo s_transmit_ie_info;
@@ -114,7 +117,7 @@ static inline bool get_event(uint8_t event)
 esp_err_t esp_openthread_radio_init(const esp_openthread_platform_config_t *config)
 {
     ESP_RETURN_ON_FALSE(s_radio_event_fd == -1, ESP_ERR_INVALID_STATE, OT_PLAT_LOG_TAG,
-                        "Radio was initalized already!");
+                        "Radio was initialized already!");
 
     s_radio_event_fd = eventfd(0, EFD_SUPPORT_ISR);
 
@@ -166,7 +169,7 @@ esp_err_t esp_openthread_radio_process(otInstance *aInstance, const esp_openthre
 
     if (get_event(EVENT_TX_DONE)) {
         clr_event(EVENT_TX_DONE);
-#if OPENTHREAD_CONFIG_DIAG_ENABLE
+#if CONFIG_OPENTHREAD_DIAG
         if (otPlatDiagModeGet()) {
             otPlatDiagRadioTransmitDone(aInstance, &s_transmit_frame, OT_ERROR_NONE);
         } else
@@ -184,7 +187,7 @@ esp_err_t esp_openthread_radio_process(otInstance *aInstance, const esp_openthre
 
     if (get_event(EVENT_TX_FAILED)) {
         clr_event(EVENT_TX_FAILED);
-#if OPENTHREAD_CONFIG_DIAG_ENABLE
+#if CONFIG_OPENTHREAD_DIAG
         if (otPlatDiagModeGet()) {
             otPlatDiagRadioTransmitDone(aInstance, &s_transmit_frame, OT_ERROR_CHANNEL_ACCESS_FAILURE);
         } else
@@ -220,7 +223,7 @@ esp_err_t esp_openthread_radio_process(otInstance *aInstance, const esp_openthre
 
     while (atomic_load(&s_recv_queue.used)) {
         if (s_receive_frame[s_recv_queue.head].mPsdu != NULL) {
-#if OPENTHREAD_CONFIG_DIAG_ENABLE
+#if CONFIG_OPENTHREAD_DIAG
             if (otPlatDiagModeGet()) {
                 otPlatDiagRadioReceiveDone(aInstance, &s_receive_frame[s_recv_queue.head], OT_ERROR_NONE);
             } else
@@ -303,7 +306,7 @@ otError otPlatRadioTransmit(otInstance *aInstance, otRadioFrame *aFrame)
 {
     esp_ieee802154_set_channel(aFrame->mChannel);
 
-    aFrame->mPsdu[-1] = aFrame->mLength; // lenth locates one byte before the psdu (esp_openthread_radio_tx_psdu);
+    aFrame->mPsdu[-1] = aFrame->mLength; // length locates one byte before the psdu (esp_openthread_radio_tx_psdu);
 
     if (otMacFrameIsSecurityEnabled(aFrame) && !aFrame->mInfo.mTxInfo.mIsSecurityProcessed) {
         if (!s_transmit_frame.mInfo.mTxInfo.mIsARetx) {
@@ -451,6 +454,15 @@ int8_t otPlatRadioGetReceiveSensitivity(otInstance *aInstance)
     return ESP_RECEIVE_SENSITIVITY;
 }
 
+#if CONFIG_OPENTHREAD_DIAG
+
+void otPlatDiagSetOutputCallback(otInstance *aInstance, otPlatDiagOutputCallback aCallback, void *aContext)
+{
+    OT_UNUSED_VARIABLE(aInstance);
+    OT_UNUSED_VARIABLE(aCallback);
+    OT_UNUSED_VARIABLE(aContext);
+}
+
 void otPlatDiagModeSet(bool mode)
 {
     s_diag_mode = mode;
@@ -482,6 +494,8 @@ void otPlatDiagAlarmCallback(otInstance *aInstance)
 {
     OT_UNUSED_VARIABLE(aInstance);
 }
+
+#endif // CONFIG_OPENTHREAD_DIAG
 
 #if OPENTHREAD_CONFIG_THREAD_VERSION >= OT_THREAD_VERSION_1_2
 void otPlatRadioSetMacKey(otInstance *aInstance, uint8_t aKeyIdMode, uint8_t aKeyId, const otMacKeyMaterial *aPrevKey,
