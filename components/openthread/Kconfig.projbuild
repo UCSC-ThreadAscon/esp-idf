@@ -31,8 +31,8 @@ menu "Ascon-OpenThread Encryption"
 
       Option "0" disables ASCON hex dump.
       Option "1" enables hex dump for Mac Layer encryption for both
-      LibAscon-128A and LibAscon-128.
+      LibAscon-128a and LibAscon-128.
       Option "2" enables hex dump for MLE encryption for both
-      LibAscon-128A and LibAscon-128.
+      LibAscon-128a and LibAscon-128.
 
   endmenu
