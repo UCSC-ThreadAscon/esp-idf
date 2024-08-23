@@ -643,7 +643,9 @@ static esp_err_t IRAM_ATTR enh_ack_set_security_addr_and_key(otRadioFrame *ack_f
         memcpy(s_security_key, (*key).mKeyMaterial.mKey.m8, OT_MAC_KEY_SIZE);
     }
 
+#if AES_DATA_ENCRYPT
     esp_ieee802154_set_transmit_security(&ack_frame->mPsdu[-1], s_security_key, s_security_addr);
+#endif
     return ESP_OK;
 }
 
