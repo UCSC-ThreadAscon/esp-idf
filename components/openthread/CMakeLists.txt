@@ -353,7 +353,6 @@ elseif(CONFIG_THREAD_ASCON_CIPHER_SUITE EQUAL 2)
 elseif(CONFIG_THREAD_ASCON_CIPHER_SUITE EQUAL 3)
 
     message("OpenThread is using the Reference implementation of ASCON-128a.")
-    
 
 elseif(CONFIG_THREAD_ASCON_CIPHER_SUITE EQUAL 4)
 
@@ -362,6 +361,33 @@ elseif(CONFIG_THREAD_ASCON_CIPHER_SUITE EQUAL 4)
 elseif(CONFIG_THREAD_ASCON_CIPHER_SUITE EQUAL 5)
 
     message("OpenThread is using the LibAscon implementation of ASCON-128.")
+
+endif()
+message("")
+message("---------------------------------------------------------------------------------")
+
+message("---------------------------------------------------------------------------------")
+message("")
+
+if(CONFIG_THREAD_ASCON_HEX_DUMP EQUAL 0)
+
+  message("Hex Dump is OFF.")
+
+elseif(CONFIG_THREAD_ASCON_HEX_DUMP EQUAL 1)
+
+  message("Hex Dump is enabled for MAC Layer ENCRYPTION.")
+
+elseif(CONFIG_THREAD_ASCON_HEX_DUMP EQUAL 2)
+
+  message("Hex Dump is enabled for MLE ENCRYPTION.")
+
+  elseif(CONFIG_THREAD_ASCON_HEX_DUMP EQUAL 3)
+
+  message("Hex Dump is enabled for MAC Layer DECRYPTION.")
+
+elseif(CONFIG_THREAD_ASCON_HEX_DUMP EQUAL 4)
+
+  message("Hex Dump is enabled for MLE DECRYPTION.")
 
 endif()
 message("")
