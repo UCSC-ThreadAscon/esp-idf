@@ -333,9 +333,21 @@ if(CONFIG_OPENTHREAD_ENABLED OR CONFIG_OPENTHREAD_SPINEL_ONLY)
 endif()
 
 # --- Begin Thread Ascon Modifications ---
-message("---------------------------------------------------------------------------------")
-message("")
+macro(start_delimiter)
 
+    message("---------------------------------------------------------------------------------")
+    message("")
+
+endmacro(start_delimiter)
+
+macro(end_delimiter)
+
+    message("")
+    message("---------------------------------------------------------------------------------")
+
+endmacro(end_delimiter)
+
+start_delimiter()
 if(CONFIG_THREAD_ASCON_CIPHER_SUITE EQUAL 0)
 
     message("OpenThread is using AES.")
@@ -361,12 +373,9 @@ elseif(CONFIG_THREAD_ASCON_CIPHER_SUITE EQUAL 5)
     message("OpenThread is using the LibAscon implementation of ASCON-128.")
 
 endif()
-message("")
-message("---------------------------------------------------------------------------------")
+end_delimiter()
 
-message("---------------------------------------------------------------------------------")
-message("")
-
+start_delimiter()
 if(CONFIG_THREAD_ASCON_HEX_DUMP EQUAL 0)
 
   message("Hex Dump is OFF.")
@@ -388,6 +397,5 @@ elseif(CONFIG_THREAD_ASCON_HEX_DUMP EQUAL 4)
   message("Hex Dump is enabled for MLE DECRYPTION.")
 
 endif()
-message("")
-message("---------------------------------------------------------------------------------")
+end_delimiter()
 # --- End Thread Ascon Modifications ---
