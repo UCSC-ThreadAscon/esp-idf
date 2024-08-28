@@ -159,11 +159,9 @@ if(CONFIG_OPENTHREAD_ENABLED)
             "src/port/esp_uart_spinel_interface.cpp"
             )
     elseif(CONFIG_OPENTHREAD_RADIO_SPINEL_UART OR CONFIG_OPENTHREAD_RADIO_SPINEL_SPI)
-        # --- BEGIN Thread Ascon Modifications ---
         list(APPEND exclude_srcs
             "src/port/esp_openthread_radio.c"
             "src/port/esp_openthread_sleep.c")
-        # --- END Thread Ascon Modifications ---
     endif()
 
     if(CONFIG_OPENTHREAD_BORDER_ROUTER)
