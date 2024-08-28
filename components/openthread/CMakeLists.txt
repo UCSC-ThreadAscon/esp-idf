@@ -398,4 +398,20 @@ elseif(CONFIG_THREAD_ASCON_HEX_DUMP EQUAL 4)
 
 endif()
 end_delimiter()
+
+start_delimiter()
+if(CONFIG_OPENTHREAD_RADIO)
+
+  message("The build is for the Radio Co-Processor (RCP).")
+
+elseif(CONFIG_OPENTHREAD_BORDER_ROUTER)
+
+  message("The build is for the Thread Border Router Host (ESP32-S3).")
+
+else()
+
+  message("The build for a pure 802.15.4 Thread Device: FTD, MTD, SED, or SSED.")
+
+endif()
+end_delimiter()
 # --- End Thread Ascon Modifications ---
