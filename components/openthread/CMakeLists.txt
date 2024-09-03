@@ -412,7 +412,7 @@ elseif(CONFIG_OPENTHREAD_BORDER_ROUTER)
 
 else()
 
-  message("The build for a pure 802.15.4 Thread Device: FTD, MTD, SED, or SSED.")
+  message("The build is for a Thread Device running only 802.15.4: FTD, MTD, SED, or SSED.")
 
 endif()
 end_delimiter()
