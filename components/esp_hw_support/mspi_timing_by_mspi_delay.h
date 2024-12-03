@@ -14,6 +14,7 @@
 #include <stdint.h>
 #include "soc/soc_caps.h"
 #if SOC_MEMSPI_TIMING_TUNING_BY_MSPI_DELAY
+#include "mspi_timing_types.h"
 #include "mspi_timing_tuning_configs.h"
 #endif
 
@@ -25,25 +26,6 @@ extern "C" {
 
 #define IS_DDR    1
 #define IS_SDR    (!IS_DDR)
-
-/**
- * MSPI timing tuning registers.
- * Upper layer rely on these 3 registers to tune the timing.
- */
-typedef struct {
-    uint8_t spi_din_mode;    // input signal delay mode
-    uint8_t spi_din_num;     // input signal delay number
-    uint8_t extra_dummy_len; // extra dummy length
-} mspi_timing_tuning_param_t;
-
-/**
- * MSPI timing tuning configurations
- */
-typedef struct {
-    mspi_timing_tuning_param_t tuning_config_table[MSPI_TIMING_CONFIG_NUM_MAX];       // Available timing tuning configs
-    uint32_t available_config_num;                                                    // Available timing tuning config numbers
-    uint32_t default_config_id;                                                       // If tuning fails, we use this one as default
-} mspi_timing_config_t;
 
 
 #if MSPI_TIMING_FLASH_NEEDS_TUNING || MSPI_TIMING_PSRAM_NEEDS_TUNING
