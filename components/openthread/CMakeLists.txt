@@ -33,7 +33,7 @@ else()
     set(ascon_file_loc "")
 
 endif()
-# --- Finish CSEThread Ascon Modifications ---
+# --- Finish Thread Ascon Modifications ---
 
 if(CONFIG_OPENTHREAD_ENABLED)
 
