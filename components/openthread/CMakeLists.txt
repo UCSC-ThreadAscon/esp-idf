@@ -445,4 +445,13 @@ else()
 
 endif()
 end_delimiter()
+
+start_delimiter()
+
+  # I learned how to print variables in CMake from:
+  # https://stackoverflow.com/a/68139580/6621292
+  #
+  message("OPENTHREAD_CONFIG_MAC_DEFAULT_MAX_FRAME_RETRIES_DIRECT is set to ${CONFIG_OPENTHREAD_MAC_DEFAULT_MAX_FRAME_RETRIES_DIRECT}.")
+
+end_delimiter()
 # --- End Thread Ascon Modifications ---
