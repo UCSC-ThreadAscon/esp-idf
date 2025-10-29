@@ -9,7 +9,7 @@ menu "Ascon-OpenThread Encryption"
   config THREAD_ASCON_CIPHER_SUITE
     int "Determines which cipher suite OpenThread should use."
     default 0
-    range 0 5
+    range 0 7
     help
       Option "0" enables AES encryption (default).
       Option "1" disables all encryption.
