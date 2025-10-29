@@ -417,6 +417,14 @@ elseif(CONFIG_THREAD_ASCON_CIPHER_SUITE EQUAL 5)
 
     message("OpenThread is using the LibAscon implementation of ASCON-128.")
 
+elseif(CONFIG_THREAD_ASCON_CIPHER_SUITE EQUAL 6)
+
+    message("OpenThread is using the ESP32 Optimized implementation of AsconAead128.")
+
+elseif(CONFIG_THREAD_ASCON_CIPHER_SUITE EQUAL 7)
+
+    message("OpenThread is using the mbedTLS implementation of ChaChaPoly.")
+
 endif()
 end_delimiter()
 
