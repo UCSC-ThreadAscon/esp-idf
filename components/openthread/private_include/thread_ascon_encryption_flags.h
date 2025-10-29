@@ -1,7 +1,7 @@
 /**
  * This file defines the flags that will be used to enable and disable
  * encryption in the OpenThread source code.
-*/
+ */
 #ifndef THREAD_ASCON_ENCRYPT_FLAGS_H_
 #define THREAD_ASCON_ENCRYPT_FLAGS_H_
 
@@ -9,7 +9,7 @@
  * Need "sdkconfig.h" in order to use Kconfig macros defined by
  * the user in `idf.py menuconfig`.
  * https://www.esp32.com/viewtopic.php?t=19098#p70667
-*/
+ */
 #include <sdkconfig.h>
 #include <stdbool.h>
 #include <openthread/logging.h>
@@ -21,7 +21,7 @@
  *
  * Helped me realize that enums operate after compile time, and thus,
  * will lead to buggy behavior when used with preprocessor directives.
-*/
+ */
 #define CIPHER_SUITE CONFIG_THREAD_ASCON_CIPHER_SUITE
 
 #define AES 0
@@ -33,6 +33,8 @@
 #define LIBASCON (CIPHER_SUITE >= 4)
 #define LIBASCON_128A (CIPHER_SUITE == 4)
 #define LIBASCON_128 (CIPHER_SUITE == 5)
+
+#define CHACHAPOLY (CIPHER_SUITE == 7)
 
 #define AES_DATA_ENCRYPT (CIPHER_SUITE == AES)
 #define AES_DATA_DECRYPT (CIPHER_SUITE == AES)
