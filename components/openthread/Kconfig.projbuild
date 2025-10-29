@@ -17,6 +17,8 @@ menu "Ascon-OpenThread Encryption"
       Option "3" enables the reference implementation of ASCON-128a.
       Option "4" enables the ASCON-128a implemenation from LibAscon, which uses variable tag length.
       Option "5" enables the ASCON-128 implementation of LibAscon, which uses variable tag length.
+      Option "6" enables the ESP32 optimized implementation of AsconAead128.
+      Option "7" enables the mbedTLS implementation of ChaChaPoly.
 
   config THREAD_ASCON_HEX_DUMP
     int "Determine whether or not to enable hex dump printing."
