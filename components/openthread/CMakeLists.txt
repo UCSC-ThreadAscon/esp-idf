@@ -33,6 +33,12 @@ else()
     set(ascon_file_loc "")
 
 endif()
+
+if(CONFIG_THREAD_ASCON_CIPHER_SUITE EQUAL 6)
+
+    list(APPEND ascon_file_loc "openthread/src/core/crypto/asconaead128-esp32")
+
+endif()
 # --- Finish Thread Ascon Modifications ---
 
 if(CONFIG_OPENTHREAD_ENABLED)
