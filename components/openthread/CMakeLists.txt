@@ -26,7 +26,8 @@ elseif(CONFIG_THREAD_ASCON_CIPHER_SUITE EQUAL 3)
 
 elseif(CONFIG_THREAD_ASCON_CIPHER_SUITE GREATER_EQUAL 4)
 
-    set(ascon_file_loc "openthread/src/core/crypto/libascon")
+    set(ascon_file_loc "openthread/src/core/crypto/libascon"
+                       "openthread/src/core/crypto/asconaead128_esp32")
 
 else()
 
@@ -34,11 +35,11 @@ else()
 
 endif()
 
-if(CONFIG_THREAD_ASCON_CIPHER_SUITE EQUAL 6)
+# if(CONFIG_THREAD_ASCON_CIPHER_SUITE EQUAL 6)
 
-    list(APPEND ascon_file_loc "openthread/src/core/crypto/asconaead128_esp32")
+#     list(APPEND ascon_file_loc "openthread/src/core/crypto/asconaead128_esp32")
 
-endif()
+# endif()
 # --- Finish Thread Ascon Modifications ---
 
 if(CONFIG_OPENTHREAD_ENABLED)
@@ -287,6 +288,7 @@ if (CONFIG_THREAD_ASCON_CIPHER_SUITE GREATER_EQUAL 2)
    if (CONFIG_THREAD_ASCON_CIPHER_SUITE GREATER_EQUAL 4)
 
       list(APPEND private_include_dirs "openthread/src/core/crypto/thread_libascon")
+      list(APPEND private_include_dirs "openthread/src/core/crypto/asconaead128_esp32")
 
       list(APPEND src_dirs "openthread/src/core/crypto/thread_libascon")
       list(APPEND src_dirs "openthread/src/core/crypto/thread_libascon_mac")
