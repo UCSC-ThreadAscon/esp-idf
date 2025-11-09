@@ -36,7 +36,11 @@
 #define LIBASCON_128 (CIPHER_SUITE == 5)
 
 #define ASCON_AEAD_128 (CIPHER_SUITE == 6)
+
 #define CHA_CHA_POLY (CIPHER_SUITE == 7)
+#if (!CONFIG_MBEDTLS_CHACHAPOLY_C)
+#error "Need to enable mbedTLS ChaChaPoly in the ESP-IDF KConfig"
+#endif
 
 #define AES_DATA_ENCRYPT (CIPHER_SUITE == AES)
 #define AES_DATA_DECRYPT (CIPHER_SUITE == AES)
