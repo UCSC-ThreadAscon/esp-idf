@@ -111,10 +111,6 @@ elseif(NOT BOOTLOADER_BUILD)
         list(APPEND srcs "rmt_hal.c")
     endif()
 
-    if(CONFIG_SOC_PCNT_SUPPORTED)
-        list(APPEND srcs "pcnt_hal.c")
-    endif()
-
     if(CONFIG_SOC_UHCI_SUPPORTED)
         list(APPEND srcs "uhci_hal.c")
     endif()
@@ -140,7 +136,7 @@ elseif(NOT BOOTLOADER_BUILD)
     endif()
 
     if(CONFIG_SOC_ETM_SUPPORTED)
-        list(APPEND srcs "etm_hal.c")
+        list(APPEND srcs "etm_hal.c" "${target}/etm_periph.c")
     endif()
 
     if(CONFIG_SOC_PARLIO_SUPPORTED)
