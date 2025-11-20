@@ -83,6 +83,14 @@ config SOC_SYSTIMER_SUPPORTED
     bool
     default y
 
+config SOC_ECC_SUPPORTED
+    bool
+    default y
+
+config SOC_ECC_EXTENDED_MODES_SUPPORTED
+    bool
+    default y
+
 config SOC_FLASH_ENC_SUPPORTED
     bool
     default y
@@ -243,7 +251,23 @@ config SOC_CPU_HAS_LOCKUP_RESET
     bool
     default y
 
+config SOC_CPU_HAS_ZC_EXTENSIONS
+    bool
+    default y
+
+config SOC_CPU_HAS_ZB_EXTENSIONS
+    bool
+    default y
+
 config SOC_CPU_ZCMP_WORKAROUND
+    bool
+    default y
+
+config SOC_CPU_ZCMP_PUSH_REVERSED
+    bool
+    default y
+
+config SOC_CPU_ZCMP_POPRET_ISSUE
     bool
     default y
 
@@ -612,6 +636,10 @@ config SOC_MCPWM_CAPTURE_CLK_FROM_GROUP
     default y
 
 config SOC_MCPWM_SUPPORT_SLEEP_RETENTION
+    bool
+    default y
+
+config SOC_ECC_CONSTANT_TIME_POINT_MUL
     bool
     default y
 

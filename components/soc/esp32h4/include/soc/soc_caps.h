@@ -66,7 +66,8 @@
 // #define SOC_AES_SUPPORTED               0    // TODO: [ESP32H4] IDF-12266
 // #define SOC_SHA_SUPPORTED               1    // TODO: [ESP32H4] IDF-12263
 // #define SOC_HMAC_SUPPORTED              0    // TODO: [ESP32H4] IDF-12257
-// #define SOC_ECC_SUPPORTED               1    // TODO: [ESP32H4] IDF-12264
+#define SOC_ECC_SUPPORTED               1
+#define SOC_ECC_EXTENDED_MODES_SUPPORTED   1
 #define SOC_FLASH_ENC_SUPPORTED         1       // TODO: [ESP32H4] IDF-12261
 // #define SOC_SECURE_BOOT_SUPPORTED       1    // TODO: [ESP32H4] IDF-12262
 
@@ -175,7 +176,12 @@
 #define SOC_HP_CPU_HAS_MULTIPLE_CORES   1   // Convenience boolean macro used to determine if a target has multiple cores.
 #define SOC_CPU_HAS_LOCKUP_RESET        1
 
+#define SOC_CPU_HAS_ZC_EXTENSIONS       1
+#define SOC_CPU_HAS_ZB_EXTENSIONS       1
+
 #define SOC_CPU_ZCMP_WORKAROUND         1
+#define SOC_CPU_ZCMP_PUSH_REVERSED      1
+#define SOC_CPU_ZCMP_POPRET_ISSUE       1
 
 /*-------------------------- DMA Common CAPS ----------------------------------------*/
 #define SOC_DMA_CAN_ACCESS_FLASH 1 /*!< DMA can access Flash memory */
@@ -364,6 +370,9 @@
 // #define SOC_SHA_SUPPORT_SHA1            (1)
 // #define SOC_SHA_SUPPORT_SHA224          (1)
 // #define SOC_SHA_SUPPORT_SHA256          (1)
+
+/*--------------------------- ECC CAPS ---------------------------------------*/
+#define SOC_ECC_CONSTANT_TIME_POINT_MUL           1
 
 /*-------------------------- SPI CAPS ----------------------------------------*/
 #define SOC_SPI_PERIPH_NUM              3
