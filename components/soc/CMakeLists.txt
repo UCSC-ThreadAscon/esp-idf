@@ -89,10 +89,6 @@ if(CONFIG_SOC_LEDC_SUPPORTED)
     list(APPEND srcs "${target_folder}/ledc_periph.c")
 endif()
 
-if(CONFIG_SOC_RMT_SUPPORTED)
-    list(APPEND srcs "${target_folder}/rmt_periph.c")
-endif()
-
 if(CONFIG_SOC_SDM_SUPPORTED)
     list(APPEND srcs "${target_folder}/sdm_periph.c")
 endif()
@@ -126,9 +122,7 @@ if(CONFIG_SOC_TWAI_SUPPORTED)
 endif()
 
 if(CONFIG_SOC_IEEE802154_SUPPORTED)
-    if(NOT target STREQUAL "esp32h4")
-        list(APPEND srcs "${target_folder}/ieee802154_periph.c")
-    endif()
+    list(APPEND srcs "${target_folder}/ieee802154_periph.c")
 endif()
 
 if(CONFIG_SOC_DAC_SUPPORTED)
