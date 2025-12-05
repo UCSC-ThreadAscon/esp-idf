@@ -89,14 +89,6 @@ elseif(NOT BOOTLOADER_BUILD)
         list(APPEND srcs "uart_hal.c" "uart_hal_iram.c")
     endif()
 
-    if(CONFIG_SOC_GPIO_PORT)
-        list(APPEND srcs "gpio_hal.c")
-    endif()
-
-    if(CONFIG_SOC_RTCIO_PIN_COUNT)
-        list(APPEND srcs "rtc_io_hal.c")
-    endif()
-
     if(CONFIG_SOC_LEDC_SUPPORTED)
         list(APPEND srcs "ledc_hal.c" "ledc_hal_iram.c")
     endif()
@@ -111,18 +103,6 @@ elseif(NOT BOOTLOADER_BUILD)
 
     if(CONFIG_SOC_UHCI_SUPPORTED)
         list(APPEND srcs "uhci_hal.c")
-    endif()
-
-    if(CONFIG_SOC_TWAI_SUPPORTED)
-        if(CONFIG_SOC_TWAI_SUPPORT_FD)
-            list(APPEND srcs "twai_hal_v2.c")
-        else()
-            list(APPEND srcs "twai_hal_v1.c")
-        endif()
-    endif()
-
-    if(CONFIG_SOC_SDM_SUPPORTED)
-        list(APPEND srcs "sdm_hal.c")
     endif()
 
     if(CONFIG_SOC_SDMMC_HOST_SUPPORTED)
@@ -182,6 +162,7 @@ elseif(NOT BOOTLOADER_BUILD)
     endif()
 
     if(CONFIG_SOC_GPSPI_SUPPORTED)
+        # Remember to add esp_hal_gpio to esp_hal_spi PRIV_REQUIRES!!!
         list(APPEND srcs
             "spi_hal.c"
             "spi_hal_iram.c"
