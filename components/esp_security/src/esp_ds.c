@@ -261,10 +261,22 @@ static void ds_acquire_enable(void)
     esp_crypto_sha_enable_periph_clk(true);
     esp_crypto_mpi_enable_periph_clk(true);
     esp_crypto_ds_enable_periph_clk(true);
+
+#if SOC_KEY_MANAGER_DS_KEY_DEPLOY
+    /*  Key Manager holds the key usage selector register(efuse vs own key).
+        Thus, we need to enable the Key Manager peripheral clock to ensure
+        that the key usage selector register is properly set.
+     */
+    esp_crypto_key_mgr_enable_periph_clk(true);
+#endif /* SOC_KEY_MANAGER_DS_KEY_DEPLOY */
 }
 
 static void ds_disable_release(void)
 {
+#if SOC_KEY_MANAGER_DS_KEY_DEPLOY
+    esp_crypto_key_mgr_enable_periph_clk(false);
+#endif /* SOC_KEY_MANAGER_DS_KEY_DEPLOY */
+
     esp_crypto_ds_enable_periph_clk(false);
     esp_crypto_mpi_enable_periph_clk(false);
     esp_crypto_sha_enable_periph_clk(false);
@@ -332,15 +344,17 @@ esp_err_t esp_ds_start_sign(const void *message,
     ds_acquire_enable();
 
 #if SOC_KEY_MANAGER_DS_KEY_DEPLOY
-    if (!key_mgr_ll_is_supported()) {
-        assert(false && "Key manager is not supported");
-    }
-
     if (key_id == HMAC_KEY_KM) {
+        if (!key_mgr_ll_is_supported()) {
+            ds_disable_release();
+            assert(false && "Key manager is not supported");
+        }
         key_mgr_hal_set_key_usage(ESP_KEY_MGR_DS_KEY, ESP_KEY_MGR_USE_OWN_KEY);
         ds_hal_set_key_source(DS_KEY_SOURCE_KEY_MGR);
     } else {
-        key_mgr_hal_set_key_usage(ESP_KEY_MGR_DS_KEY, ESP_KEY_MGR_USE_EFUSE_KEY);
+        if (key_mgr_ll_is_supported()) {
+            key_mgr_hal_set_key_usage(ESP_KEY_MGR_DS_KEY, ESP_KEY_MGR_USE_EFUSE_KEY);
+        }
         ds_hal_set_key_source(DS_KEY_SOURCE_EFUSE);
 #endif
         // initiate hmac

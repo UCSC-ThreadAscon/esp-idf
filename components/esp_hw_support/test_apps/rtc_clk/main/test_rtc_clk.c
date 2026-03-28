@@ -377,7 +377,7 @@ RTC_NOINIT_ATTR
 #elif CONFIG_IDF_TARGET_ESP32C61
 #define TEMP_RTC_STORE_REG          LP_AON_DATE_REG
 #define TEMP_RTC_STORE_REG_M        LP_AON_DATE_M
-#elif CONFIG_IDF_TARGET_ESP32H4
+#elif CONFIG_IDF_TARGET_ESP32H4 || CONFIG_IDF_TARGET_ESP32H21
 #include "soc/pmu_reg.h"
 #define TEMP_RTC_STORE_REG          PMU_DATE_REG
 #define TEMP_RTC_STORE_REG_M        PMU_PMU_DATE_M
@@ -483,4 +483,34 @@ TEST_CASE("Output 8M clock to GPIO25", "[ignore]")
     SET_PERI_REG_MASK(RTC_IO_RTC_DEBUG_SEL_REG, RTC_IO_DEBUG_12M_NO_GATING);
     pull_out_clk(RTC_IO_DEBUG_SEL0_8M);
 }
+#endif
+
+#if !CONFIG_RTC_CLK_FUNC_IN_IRAM
+static void do_restart(void)
+{
+    esp_restart();
+}
+
+#if CONFIG_FREERTOS_NUMBER_OF_CORES > 1
+static void do_restart_from_app_cpu(void)
+{
+    xTaskCreatePinnedToCore((TaskFunction_t) &do_restart, "restart", 2048, NULL, 5, NULL, 1);
+    vTaskDelay(2);
+}
+#endif
+
+static void check_reset_reason_sw(void)
+{
+    TEST_ASSERT_EQUAL(ESP_RST_SW, esp_reset_reason());
+}
+
+TEST_CASE_MULTIPLE_STAGES("test rtc_clk in flash after restart", "[rtc_clk]",
+                          do_restart,
+                          check_reset_reason_sw);
+
+#if CONFIG_FREERTOS_NUMBER_OF_CORES > 1
+TEST_CASE_MULTIPLE_STAGES("test rtc_clk in flash after restart from APP CPU", "[rtc_clk]",
+                          do_restart_from_app_cpu,
+                          check_reset_reason_sw);
+#endif
 #endif

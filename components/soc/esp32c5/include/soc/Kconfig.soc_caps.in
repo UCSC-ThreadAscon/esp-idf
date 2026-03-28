@@ -235,6 +235,10 @@ config SOC_WDT_SUPPORTED
     bool
     default y
 
+config SOC_RTC_WDT_SUPPORTED
+    bool
+    default y
+
 config SOC_SDIO_SLAVE_SUPPORTED
     bool
     default y
@@ -587,10 +591,6 @@ config SOC_GPIO_HP_PERIPH_PD_SLEEP_WAKEABLE_MASK
     int
     default 0
 
-config SOC_GPIO_HP_PERIPH_PD_SLEEP_WAKEABLE_PIN_CNT
-    int
-    default 7
-
 config SOC_GPIO_VALID_DIGITAL_IO_PAD_MASK
     hex
     default 0x0000000001FFFF80
@@ -636,14 +636,6 @@ config SOC_SDM_SUPPORT_SLEEP_RETENTION
     default y
 
 config SOC_ETM_SUPPORT_SLEEP_RETENTION
-    bool
-    default y
-
-config SOC_ANA_CMPR_NUM
-    int
-    default 1
-
-config SOC_ANA_CMPR_CAN_DISTINGUISH_EDGE
     bool
     default y
 
@@ -1318,10 +1310,6 @@ config SOC_UART_WAKEUP_SUPPORT_START_BIT_MODE
 config SOC_UART_WAKEUP_SUPPORT_CHAR_SEQ_MODE
     bool
     default y
-
-config SOC_UHCI_NUM
-    int
-    default 1
 
 config SOC_COEX_HW_PTI
     bool

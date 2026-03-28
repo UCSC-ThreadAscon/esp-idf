@@ -85,6 +85,7 @@
 #define SOC_CLK_TREE_SUPPORTED          1
 #define SOC_ASSIST_DEBUG_SUPPORTED      1
 #define SOC_WDT_SUPPORTED               1
+#define SOC_RTC_WDT_SUPPORTED           1
 #define SOC_SPI_FLASH_SUPPORTED         1
 #define SOC_SPIRAM_SUPPORTED            1
 #define SOC_LIGHT_SLEEP_SUPPORTED       1
@@ -226,7 +227,6 @@
 #define SOC_GPIO_SUPPORT_HP_PERIPH_PD_SLEEP_WAKEUP      (1)
 #define SOC_GPIO_SUPPORT_DEEPSLEEP_WAKEUP               SOC_GPIO_SUPPORT_HP_PERIPH_PD_SLEEP_WAKEUP
 #define SOC_GPIO_HP_PERIPH_PD_SLEEP_WAKEABLE_MASK       (0ULL | BIT0 | BIT1 | BIT2 | BIT3 | BIT4 | BIT5)
-#define SOC_GPIO_HP_PERIPH_PD_SLEEP_WAKEABLE_PIN_CNT    (6)
 
 // digital I/O pad powered by VDD3P3_CPU or VDD_SPI(GPIO_NUM_6~GPIO_NUM_39)
 #define SOC_GPIO_VALID_DIGITAL_IO_PAD_MASK  (SOC_GPIO_VALID_GPIO_MASK & ~((1ULL<<6) - 1))
@@ -493,7 +493,7 @@
 #define SOC_PM_CPU_RETENTION_BY_SW          (1)
 #define SOC_PM_FPU_RETENTION_BY_SW          (1)
 #define SOC_PM_MODEM_RETENTION_BY_REGDMA    (1)
-#define SOC_PM_MODEM_CLK_CONF_RETENTION     (1)  /*!< In esp32H4, i2c lpcon is placed in modem domain*/
+#define SOC_PM_MODEM_CLK_CONF_RETENTION     (1)  /*!< In esp32H4, i2c lpcon is placed in top domain*/
 #define SOC_EXT_MEM_CACHE_TAG_IN_CPU_DOMAIN (1)
 
 #define SOC_PM_PAU_LINK_NUM                 (4)

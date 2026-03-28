@@ -68,7 +68,9 @@
 
 #include "hal/cache_ll.h"
 #include "hal/clk_tree_ll.h"
+#if SOC_WDT_SUPPORTED || SOC_RTC_WDT_SUPPORTED || SOC_SLEEP_TGWDT_STOP_WORKAROUND
 #include "hal/wdt_hal.h"
+#endif
 #include "hal/uart_hal.h"
 #if SOC_TOUCH_SENSOR_SUPPORTED
 #include "hal/touch_sens_hal.h"
@@ -95,11 +97,14 @@
 #include "esp_private/esp_task_wdt.h"
 #include "esp_private/sar_periph_ctrl.h"
 
+#if SOC_PM_SUPPORT_EXT1_WAKEUP && SOC_RTCIO_PIN_COUNT > 0
+#include "esp_private/sleep_gpio.h"
+#endif
+
 #ifdef CONFIG_IDF_TARGET_ESP32
 #include "esp32/rom/cache.h"
 #include "esp32/rom/rtc.h"
 #include "esp_private/gpio.h"
-#include "esp_private/sleep_gpio.h"
 #elif CONFIG_IDF_TARGET_ESP32S2
 #include "esp32s2/rom/rtc.h"
 #include "soc/extmem_reg.h"
@@ -219,7 +224,7 @@
 #elif CONFIG_IDF_TARGET_ESP32C5
 #define DEFAULT_SLEEP_OUT_OVERHEAD_US       (318)
 #define DEFAULT_HARDWARE_OUT_OVERHEAD_US    (56)
-#define PVT_REINIT_COST_US                  (25)
+#define PVT_REINIT_COST_US                  (75)
 #elif CONFIG_IDF_TARGET_ESP32C61
 #define DEFAULT_SLEEP_OUT_OVERHEAD_US       (65)
 #define DEFAULT_HARDWARE_OUT_OVERHEAD_US    (70)
@@ -290,8 +295,8 @@ typedef struct {
     uint32_t ext0_rtc_gpio_num : 5;
 #endif
 #if SOC_GPIO_SUPPORT_HP_PERIPH_PD_SLEEP_WAKEUP
-    uint32_t gpio_wakeup_mask : SOC_GPIO_HP_PERIPH_PD_SLEEP_WAKEABLE_PIN_CNT;
-    uint32_t gpio_trigger_mode : SOC_GPIO_HP_PERIPH_PD_SLEEP_WAKEABLE_PIN_CNT;
+    uint64_t gpio_wakeup_mask;
+    uint64_t gpio_trigger_mode;
 #endif
     uint32_t sleep_time_adjustment;
     uint32_t ccount_ticks_record;
@@ -367,7 +372,7 @@ void esp_sleep_overhead_out_time_refresh(void)
 static uint32_t get_power_down_flags(void);
 static uint32_t get_sleep_flags(uint32_t pd_flags, bool deepsleep);
 static uint32_t get_sleep_clock_icg_flags(void);
-#if CONFIG_ESP_SLEEP_ENABLE_RTC_WDT_IN_SLEEP
+#if CONFIG_ESP_SLEEP_ENABLE_RTC_WDT_IN_SLEEP && SOC_RTC_WDT_SUPPORTED
 static uint32_t get_sleep_rtc_wdt_timeout(uint64_t sleep_duration);
 static uint32_t calc_sleep_slow_clk_required_cycles(uint32_t timeout, uint32_t rtc_slow_clk_cal_period);
 #endif
@@ -740,7 +745,7 @@ static SLEEP_FN_ATTR void misc_modules_wake_prepare(uint32_t sleep_flags)
     pvt_func_enable(true);
 #endif
 
-#if CONFIG_PM_POWER_DOWN_PERIPHERAL_IN_LIGHT_SLEEP
+#if CONFIG_PM_POWER_DOWN_PERIPHERAL_IN_LIGHT_SLEEP && SOC_WDT_SUPPORTED
     if (sleep_flags & PMU_SLEEP_PD_TOP) {
         // There is no driver to manage the flashboot watchdog, and it is definitely be in off state when
         // the system is running, after waking up from pd_top sleep, shut it down by software here.
@@ -796,6 +801,7 @@ static SLEEP_FN_ATTR void misc_modules_wake_prepare(uint32_t sleep_flags)
  */
 static SLEEP_FN_ATTR void sleep_rtc_wdt_prepare(bool enable)
 {
+#if SOC_RTC_WDT_SUPPORTED
     wdt_hal_context_t rtc_wdt_ctx = RWDT_HAL_CONTEXT_DEFAULT();
     if (enable) {
         wdt_hal_init(&rtc_wdt_ctx, WDT_RWDT, 0, false);
@@ -816,6 +822,9 @@ static SLEEP_FN_ATTR void sleep_rtc_wdt_prepare(bool enable)
         wdt_hal_disable(&rtc_wdt_ctx);
         wdt_hal_write_protect_enable(&rtc_wdt_ctx);
     }
+#else
+    (void)enable;
+#endif /* SOC_RTC_WDT_SUPPORTED */
 }
 
 static SLEEP_FN_ATTR void sleep_low_power_clock_calibration(bool is_dslp)
@@ -995,6 +1004,12 @@ static esp_err_t FORCE_IRAM_ATTR esp_sleep_start_safe(uint32_t sleep_flags, uint
 #endif // !SOC_MSPI_HAS_INDEPENT_IOMUX
         }
 #endif
+#if CONFIG_ESP_SLEEP_SET_FLASH_DPD
+        if (sleep_flags & RTC_SLEEP_FLASH_DPD) {
+            //Release Flash out from deep powerdown mode
+            spi_flash_enable_deep_power_down_mode(false);
+        }
+#endif
         /* Cache Resume 1: Resume cache for continue running*/
         resume_cache();
 #if CONFIG_PM_SLP_SPIRAM_HALFSLEEP_ENABLED && CONFIG_SPIRAM_XIP_FROM_PSRAM
@@ -1017,9 +1032,6 @@ static esp_err_t SLEEP_FN_ATTR esp_sleep_start(uint32_t sleep_flags, uint32_t cl
 
     int64_t sleep_duration = (int64_t) s_config.sleep_duration - (int64_t) s_config.sleep_time_adjustment;
 
-    // Sleep UART prepare
-    sleep_uart_prepare(sleep_flags, deep_sleep);
-
 #if CONFIG_ESP_PHY_ENABLED && SOC_DEEP_SLEEP_SUPPORTED
     // Do deep-sleep PHY related callback, which need to be executed when the PLL clock is exists.
     // For light-sleep, PHY state is managed by the upper layer of the wifi/bt protocol stack.
@@ -1028,21 +1040,11 @@ static esp_err_t SLEEP_FN_ATTR esp_sleep_start(uint32_t sleep_flags, uint32_t cl
     }
 #endif
 
-#if !CONFIG_APP_BUILD_TYPE_PURE_RAM_APP
-    uint32_t xtal_freq = rtc_clk_xtal_freq_get();
-    esp_clk_utils_mspi_speed_mode_sync_before_cpu_freq_switching(xtal_freq, xtal_freq);
-#endif
-
 #if SOC_PM_RETENTION_SW_TRIGGER_REGDMA
     if (!deep_sleep && (sleep_flags & PMU_SLEEP_PD_TOP)) {
         sleep_retention_do_system_retention(true);
     }
 #endif
-
-    // Save current frequency and switch to XTAL
-    rtc_cpu_freq_config_t cpu_freq_config;
-    rtc_clk_cpu_freq_get_config(&cpu_freq_config);
-    rtc_clk_cpu_freq_set_xtal_for_sleep();
 
 #if SOC_PM_SUPPORT_EXT0_WAKEUP
     // Configure pins for external wakeup
@@ -1063,6 +1065,19 @@ static esp_err_t SLEEP_FN_ATTR esp_sleep_start(uint32_t sleep_flags, uint32_t cl
         esp_sleep_gpio_wakeup_prepare_on_hp_periph_powerdown();
     }
 #endif
+
+    // Sleep UART prepare
+    sleep_uart_prepare(sleep_flags, deep_sleep);
+
+#if !CONFIG_APP_BUILD_TYPE_PURE_RAM_APP
+    uint32_t xtal_freq = rtc_clk_xtal_freq_get();
+    esp_clk_utils_mspi_speed_mode_sync_before_cpu_freq_switching(xtal_freq, xtal_freq);
+#endif
+
+    // Save current frequency and switch to XTAL
+    rtc_cpu_freq_config_t cpu_freq_config;
+    rtc_clk_cpu_freq_get_config(&cpu_freq_config);
+    rtc_clk_cpu_freq_set_xtal_for_sleep();
 
 #if CONFIG_ULP_COPROC_ENABLED
     // Enable ULP wakeup
@@ -1282,6 +1297,7 @@ static esp_err_t FORCE_IRAM_ATTR deep_sleep_start(bool allow_sleep_rejection)
     s_config.sleep_time_adjustment = DEEP_SLEEP_TIME_OVERHEAD_US;
 
     // Safety net: enable WDT in case exit from deep sleep fails
+#if SOC_RTC_WDT_SUPPORTED
     wdt_hal_context_t rtc_wdt_ctx = RWDT_HAL_CONTEXT_DEFAULT();
     bool rtc_wdt_was_enabled = wdt_hal_is_enabled(&rtc_wdt_ctx);    // If WDT was enabled in the user code, then do not change it here.
     if (!rtc_wdt_was_enabled) {
@@ -1289,6 +1305,7 @@ static esp_err_t FORCE_IRAM_ATTR deep_sleep_start(bool allow_sleep_rejection)
     } else {
         ESP_EARLY_LOGW(TAG, "RTC WDT is enabled and will not be reconfigured again!");
     }
+#endif /* SOC_RTC_WDT_SUPPORTED */
 
 #if SOC_PMU_SUPPORTED
     uint32_t force_pd_flags = PMU_SLEEP_PD_TOP | PMU_SLEEP_PD_VDDSDIO | PMU_SLEEP_PD_MODEM | PMU_SLEEP_PD_HP_PERIPH \
@@ -1336,9 +1353,11 @@ static esp_err_t FORCE_IRAM_ATTR deep_sleep_start(bool allow_sleep_rejection)
         ESP_INFINITE_LOOP();
     }
     // Never returns here, except that the sleep is rejected.
+#if SOC_RTC_WDT_SUPPORTED
     if (!rtc_wdt_was_enabled) {
         sleep_rtc_wdt_prepare(false);
     }
+#endif /* SOC_RTC_WDT_SUPPORTED */
 
 #if CONFIG_ESP_INT_WDT && CONFIG_ESP32_ECO3_CACHE_LOCK_FIX
     // Configure WDT to use livelock workaround timeout after releasing other CPU
@@ -1406,12 +1425,6 @@ static SLEEP_FN_ATTR esp_err_t esp_light_sleep_inner(uint32_t sleep_flags, uint3
         // Wait for the flash chip to start up
         esp_rom_delay_us(flash_enable_time_us);
     } else {
-#if CONFIG_ESP_SLEEP_SET_FLASH_DPD
-        if (sleep_flags & RTC_SLEEP_FLASH_DPD) {
-            //Release Flash out from deep powerdown mode
-            spi_flash_enable_deep_power_down_mode(false);
-        }
-#endif
     }
 
 #if CONFIG_ESP_SLEEP_CACHE_SAFE_ASSERTION
@@ -1636,6 +1649,7 @@ esp_err_t esp_light_sleep_start(void)
     periph_inform_out_light_sleep_overhead(s_config.sleep_time_adjustment - sleep_time_overhead_in);
 
     // Safety net: enable WDT in case exit from light sleep fails
+#if SOC_RTC_WDT_SUPPORTED
     wdt_hal_context_t rtc_wdt_ctx = RWDT_HAL_CONTEXT_DEFAULT();
     bool rtc_wdt_was_enabled = wdt_hal_is_enabled(&rtc_wdt_ctx);    // If WDT was enabled in the user code, then do not change it here.
     if (!rtc_wdt_was_enabled) {
@@ -1643,6 +1657,7 @@ esp_err_t esp_light_sleep_start(void)
     } else {
         ESP_EARLY_LOGW(TAG, "RTC WDT is enabled and will not be reconfigured again!");
     }
+#endif /* SOC_RTC_WDT_SUPPORTED */
 
     esp_err_t err = ESP_OK;
     int64_t final_sleep_duration_us = (int64_t)s_config.sleep_duration - (int64_t)s_config.sleep_time_adjustment;
@@ -1724,9 +1739,11 @@ esp_err_t esp_light_sleep_start(void)
 #endif
 #endif
 
+#if SOC_RTC_WDT_SUPPORTED
     if (!rtc_wdt_was_enabled) {
         sleep_rtc_wdt_prepare(false);
     }
+#endif /* SOC_RTC_WDT_SUPPORTED */
 
 #if CONFIG_ESP_TASK_WDT_USE_ESP_TIMER
     /* Restart the Task Watchdog timer as it was stopped before sleeping. */
@@ -2225,15 +2242,13 @@ uint64_t esp_sleep_get_ext1_wakeup_status(void)
     uint32_t status = rtc_hal_ext1_get_wakeup_status();
     // Translate bit map of RTC IO numbers into the bit map of GPIO numbers
     uint64_t gpio_mask = 0;
-    for (int gpio = 0; gpio < SOC_GPIO_PIN_COUNT; ++gpio) {
-        if (!esp_sleep_is_valid_wakeup_gpio(gpio)) {
-            continue;
+    while (status) {
+        int rtc_pin = __builtin_ctz(status);
+        gpio_num_t gpio = esp_sleep_wakeup_io_bit2num(rtc_pin);
+        if (gpio != GPIO_NUM_NC) {
+            gpio_mask |= 1ULL << gpio;
         }
-        int rtc_pin = rtc_io_number_get(gpio);
-        if ((status & BIT(rtc_pin)) == 0) {
-            continue;
-        }
-        gpio_mask |= 1ULL << gpio;
+        status &= ~BIT(rtc_pin);
     }
     return gpio_mask;
 }
@@ -2251,26 +2266,29 @@ uint64_t esp_sleep_get_gpio_wakeup_status(void)
 
 static void esp_sleep_gpio_wakeup_prepare_on_hp_periph_powerdown(void)
 {
-    uint32_t valid_wake_io_mask = SOC_GPIO_HP_PERIPH_PD_SLEEP_WAKEABLE_MASK;
-    for (gpio_num_t gpio_idx = __builtin_ctz(valid_wake_io_mask); valid_wake_io_mask >> gpio_idx; gpio_idx++) {
-        if ((s_config.gpio_wakeup_mask & BIT64(gpio_idx)) == 0) {
-            continue;
-        }
+    uint64_t valid_wake_io_mask = s_config.gpio_wakeup_mask & SOC_GPIO_HP_PERIPH_PD_SLEEP_WAKEABLE_MASK;
+    while (valid_wake_io_mask) {
+        int gpio_idx = __builtin_ctzll(valid_wake_io_mask);
 #if SOC_LP_IO_CLOCK_IS_INDEPENDENT
         // To suppress build errors about spinlock's __DECLARE_RCC_ATOMIC_ENV
         int __DECLARE_RCC_ATOMIC_ENV __attribute__ ((unused));
         rtcio_ll_enable_io_clock(true);
 #endif
 #if CONFIG_ESP_SLEEP_GPIO_ENABLE_INTERNAL_RESISTORS
-        if (s_config.gpio_trigger_mode & BIT(gpio_idx)) {
-            ESP_ERROR_CHECK(gpio_pullup_dis(gpio_idx));
-            ESP_ERROR_CHECK(gpio_pulldown_en(gpio_idx));
+        if (GPIO_IS_VALID_OUTPUT_GPIO(gpio_idx)) {
+            if (s_config.gpio_trigger_mode & BIT(gpio_idx)) {
+                gpio_pullup_dis(gpio_idx);
+                gpio_pulldown_en(gpio_idx);
+            } else {
+                gpio_pullup_en(gpio_idx);
+                gpio_pulldown_dis(gpio_idx);
+            }
         } else {
-            ESP_ERROR_CHECK(gpio_pullup_en(gpio_idx));
-            ESP_ERROR_CHECK(gpio_pulldown_dis(gpio_idx));
+            ESP_EARLY_LOGE(TAG, "GPIO%d not support internal PU/PD", gpio_idx);
         }
 #endif
         ESP_ERROR_CHECK(gpio_hold_en(gpio_idx));
+        valid_wake_io_mask &= valid_wake_io_mask - 1;
     }
     // Clear state from previous wakeup
     rtc_hal_gpio_clear_wakeup_status();
@@ -2297,19 +2315,17 @@ esp_err_t esp_sleep_enable_gpio_wakeup_on_hp_periph_powerdown(uint64_t gpio_pin_
             }
         }
     }
-
-    for (gpio_num_t gpio_idx = __builtin_ctzll(gpio_pin_mask); gpio_pin_mask >> gpio_idx; gpio_idx++) {
-        if ((gpio_pin_mask & BIT64(gpio_idx)) == 0) {
-            continue;
-        }
+    while (gpio_pin_mask) {
+        int gpio_idx = __builtin_ctzll(gpio_pin_mask);
         err = gpio_wakeup_enable_on_hp_periph_powerdown_sleep(gpio_idx, intr_type);
         if (err != ESP_OK) return err;
-        s_config.gpio_wakeup_mask |= BIT(gpio_idx);
+        s_config.gpio_wakeup_mask |= BIT64(gpio_idx);
         if (mode == ESP_GPIO_WAKEUP_GPIO_HIGH) {
-            s_config.gpio_trigger_mode |= BIT(gpio_idx);
+            s_config.gpio_trigger_mode |= BIT64(gpio_idx);
         } else {
-            s_config.gpio_trigger_mode &= ~BIT(gpio_idx);
+            s_config.gpio_trigger_mode &= ~BIT64(gpio_idx);
         }
+        gpio_pin_mask &= gpio_pin_mask - 1;
     }
     s_config.wakeup_triggers |= RTC_GPIO_TRIG_EN;
     return err;
@@ -3016,7 +3032,7 @@ static SLEEP_FN_ATTR uint32_t get_sleep_flags(uint32_t sleep_flags, bool deepsle
     }
 #endif
 
-#if CONFIG_ESP_SLEEP_ENABLE_RTC_WDT_IN_SLEEP
+#if CONFIG_ESP_SLEEP_ENABLE_RTC_WDT_IN_SLEEP && SOC_RTC_WDT_SUPPORTED
     if (s_config.wakeup_triggers & RTC_TIMER_TRIG_EN) {
         sleep_flags |= RTC_SLEEP_USE_RTC_WDT;
     } else {
@@ -3075,7 +3091,7 @@ static SLEEP_FN_ATTR uint32_t get_sleep_clock_icg_flags(void)
     return clk_flags;
 }
 
-#if CONFIG_ESP_SLEEP_ENABLE_RTC_WDT_IN_SLEEP
+#if CONFIG_ESP_SLEEP_ENABLE_RTC_WDT_IN_SLEEP && SOC_RTC_WDT_SUPPORTED
 /* TODO: PM-609 */
 /* Calculate drift cycles of rtc slow clock in long-term working scenarios. */
 static SLEEP_FN_ATTR uint32_t calc_sleep_slow_clk_required_cycles(uint32_t timeout, uint32_t rtc_slow_clk_cal_period)

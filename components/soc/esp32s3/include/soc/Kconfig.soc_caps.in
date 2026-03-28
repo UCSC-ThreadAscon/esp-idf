@@ -235,6 +235,10 @@ config SOC_WDT_SUPPORTED
     bool
     default y
 
+config SOC_RTC_WDT_SUPPORTED
+    bool
+    default y
+
 config SOC_SPI_FLASH_SUPPORTED
     bool
     default y
@@ -478,6 +482,14 @@ config SOC_GPIO_CLOCKOUT_BY_IO_MUX
 config SOC_GPIO_CLOCKOUT_CHANNEL_NUM
     int
     default 3
+
+config SOC_GPIO_SUPPORT_HP_PERIPH_PD_SLEEP_WAKEUP
+    bool
+    default y
+
+config SOC_GPIO_HP_PERIPH_PD_SLEEP_WAKEABLE_MASK
+    int
+    default 0
 
 config SOC_I2C_NUM
     int
@@ -782,10 +794,6 @@ config SOC_UART_SUPPORT_XTAL_CLK
 config SOC_UART_WAKEUP_SUPPORT_ACTIVE_THRESH_MODE
     bool
     default y
-
-config SOC_UHCI_NUM
-    int
-    default 1
 
 config SOC_USB_OTG_PERIPH_NUM
     int

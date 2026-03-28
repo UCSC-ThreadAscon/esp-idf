@@ -203,6 +203,10 @@ config SOC_WDT_SUPPORTED
     bool
     default y
 
+config SOC_RTC_WDT_SUPPORTED
+    bool
+    default y
+
 config SOC_SPI_FLASH_SUPPORTED
     bool
     default y
@@ -430,6 +434,14 @@ config SOC_GPIO_CLOCKOUT_CHANNEL_NUM
 config SOC_RTC_CNTL_NEEDS_ATOMIC_ACCESS
     bool
     default y
+
+config SOC_GPIO_SUPPORT_HP_PERIPH_PD_SLEEP_WAKEUP
+    bool
+    default y
+
+config SOC_GPIO_HP_PERIPH_PD_SLEEP_WAKEABLE_MASK
+    int
+    default 0
 
 config SOC_DEDIC_GPIO_HAS_INTERRUPT
     bool
