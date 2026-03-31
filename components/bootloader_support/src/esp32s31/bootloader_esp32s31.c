@@ -23,8 +23,34 @@
 #include "soc/rtc_wdt_reg.h"
 #include "hal/rwdt_ll.h"
 #endif
+#include "soc/hp_sys_clkrst_reg.h"
+#include "soc/pmu_reg.h"
+#include "hal/regi2c_ctrl_ll.h"
+#include "hal/modem_lpcon_ll.h"
 
 ESP_LOG_ATTR_TAG(TAG, "boot.esp32s31");
+
+static inline void bootloader_hardware_init(void)
+{
+    // IDF-15507: Work around ESP32-S31 cache/MSPI issues by keeping the cache path clocks ungated.
+    REG_SET_BIT(HP_SYS_CLKRST_CACHE_CTRL0_REG,
+                HP_SYS_CLKRST_REG_CPU_ACACHE_CPU_CLK_FORCE_ON |
+                HP_SYS_CLKRST_REG_ROM_ACACHE_MEM_CLK_FORCE_ON |
+                HP_SYS_CLKRST_REG_CPU_CACHE_CPU_CLK_FORCE_ON |
+                HP_SYS_CLKRST_REG_MSPI_CACHE_SYS_CLK_FORCE_ON);
+
+    /* Disable RF pll by default */
+    REG_SET_FIELD(PMU_RF_PWC_REG, PMU_XPD_RF_CIRCUIT, 0xFFFF);
+
+    modem_lpcon_ll_enable_bus_clock(true);
+
+#if !CONFIG_IDF_ENV_FPGA || SOC_REGI2C_SUPPORTED
+    /* Enable analog i2c master clock */
+    _regi2c_ctrl_ll_master_enable_clock(true); // keep ana i2c mst clock always enabled in bootloader
+    regi2c_ctrl_ll_master_force_enable_clock(true); // TODO: IDF-14678 Remove this?
+    regi2c_ctrl_ll_master_configure_clock();
+#endif
+}
 
 #if SOC_RTC_WDT_SUPPORTED
 static void bootloader_super_wdt_auto_feed(void)
@@ -39,7 +65,7 @@ esp_err_t bootloader_init(void)
 {
     esp_err_t ret = ESP_OK;
 
-    // bootloader_hardware_init();       // TODO: IDF-14696
+    bootloader_hardware_init();       // TODO: IDF-14696
 #if SOC_RTC_WDT_SUPPORTED
     bootloader_super_wdt_auto_feed();
 #endif
