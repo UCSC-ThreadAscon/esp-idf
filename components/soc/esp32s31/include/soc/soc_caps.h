@@ -44,7 +44,7 @@
 #define SOC_ETM_SUPPORTED               1
 // #define SOC_PARLIO_SUPPORTED            1      // TODO: [ESP32S31] IDF-14711
 #define SOC_ASYNC_MEMCPY_SUPPORTED      1
-// #define SOC_USB_OTG_SUPPORTED           1      // TODO: [ESP32S31] IDF-14701
+#define SOC_USB_OTG_SUPPORTED           1
 // #define SOC_USB_SERIAL_JTAG_SUPPORTED   1      // TODO: [ESP32S31] IDF-14788
 // #define SOC_TEMP_SENSOR_SUPPORTED       1      // TODO: [ESP32S31] IDF-14799
 // #define SOC_SUPPORTS_SECURE_DL_MODE     1      // TODO: [ESP32S31] IDF-14629
@@ -102,6 +102,11 @@
 #define SOC_CORDIC_SUPPORTED            1
 #define SOC_REGI2C_SUPPORTED            1
 
+/*-------------------------- USB CAPS ----------------------------------------*/
+#define SOC_USB_OTG_PERIPH_NUM          (1U)
+#define SOC_USB_FSLS_PHY_NUM            (0U)
+#define SOC_USB_UTMI_PHY_NUM            (1U)
+
 /*-------------------------- XTAL CAPS ---------------------------------------*/
 #define SOC_XTAL_SUPPORT_40M            1
 
@@ -158,8 +163,8 @@
 // ESP32-S31 has 1 GPIO peripheral
 #define SOC_GPIO_PORT                      1U
 #define SOC_GPIO_PIN_COUNT                 62
-// #define SOC_GPIO_SUPPORT_PIN_GLITCH_FILTER 1 // TODO: [ESP32S31] IDF-14781
-// #define SOC_GPIO_FLEX_GLITCH_FILTER_NUM    8 // TODO: [ESP32S31] IDF-14781
+#define SOC_GPIO_SUPPORT_PIN_GLITCH_FILTER 1
+#define SOC_GPIO_FLEX_GLITCH_FILTER_NUM    8
 #define SOC_GPIO_SUPPORT_PIN_HYS_FILTER    1
 
 // GPIO peripheral has the ETM extension
@@ -305,7 +310,8 @@
 #define SOC_CLK_LP_FAST_SUPPORT_XTAL              (1)     /*!< Support XTAL clock as the LP_FAST clock source */
 
 #define SOC_RCC_IS_INDEPENDENT                    1       /*!< Reset and Clock Control has own registers for each module */
-
+/*-------------------------- Memory CAPS --------------------------*/
+#define SOC_ASYNCHRONOUS_BUS_ERROR_MODE           (1)
 /*-------------------------- Power Management CAPS ----------------------------*/
 #define SOC_PM_SUPPORT_EXT1_WAKEUP      (1)
 #define SOC_PM_SUPPORT_EXT1_WAKEUP_MODE_PER_PIN   (1) /*!<Supports one bit per pin to configure the EXT1 trigger level */
