@@ -32,7 +32,7 @@
 #define SOC_AHB_GDMA_SUPPORTED          1
 #define SOC_AXI_GDMA_SUPPORTED          1
 #define SOC_LP_AHB_GDMA_SUPPORTED       1
-// #define SOC_DMA2D_SUPPORTED             1      // TODO: [ESP32S31] IDF-14762
+#define SOC_DMA2D_SUPPORTED             1
 #define SOC_GPTIMER_SUPPORTED           1
 // #define SOC_PCNT_SUPPORTED              1      // TODO: [ESP32S31] IDF-14699
 // #define SOC_LCDCAM_SUPPORTED            1      // TODO: [ESP32S31] IDF-14722
@@ -57,8 +57,8 @@
 #define SOC_RMT_SUPPORTED               1
 // #define SOC_I2S_SUPPORTED               1      // TODO: [ESP32S31] IDF-14771
 #define SOC_SDM_SUPPORTED               1
-// #define SOC_GPSPI_SUPPORTED             1      // TODO: [ESP32S31] IDF-14734
-// #define SOC_LEDC_SUPPORTED              1      // TODO: [ESP32S31] IDF-14709
+#define SOC_GPSPI_SUPPORTED             1
+#define SOC_LEDC_SUPPORTED              1
 // #define SOC_ISP_SUPPORTED               1      // TODO: [ESP32S31] IDF-14769
 // #define SOC_I2C_SUPPORTED               1      // TODO: [ESP32S31] IDF-14726
 #define SOC_SYSTIMER_SUPPORTED          1         // TODO: [ESP32S31] IDF-14693
@@ -85,7 +85,7 @@
 #define SOC_PSRAM_DMA_CAPABLE           1
 // #define SOC_SDMMC_HOST_SUPPORTED        1      // TODO: [ESP32S31] IDF-14705
 #define SOC_CLK_TREE_SUPPORTED          1
-// #define SOC_ASSIST_DEBUG_SUPPORTED      1      // TODO: [ESP32S31] IDF-14675
+#define SOC_ASSIST_DEBUG_SUPPORTED      1
 // #define SOC_DEBUG_PROBE_SUPPORTED       1      // TODO: [ESP32S31] IDF-14798
 #define SOC_WDT_SUPPORTED               1
 #define SOC_RTC_WDT_SUPPORTED           1
@@ -210,8 +210,17 @@
 #define SOC_ETM_SUPPORT_SLEEP_RETENTION     1
 
 /*-------------------------- LEDC CAPS ---------------------------------------*/
-// TODO: [ESP32S31] IDF-14709
-#define SOC_LEDC_CHANNEL_NUM                (6)
+#define SOC_LEDC_SUPPORT_PLL_DIV_CLOCK      (1)
+#define SOC_LEDC_SUPPORT_XTAL_CLOCK         (1)
+#define SOC_LEDC_TIMER_NUM                  (4)
+#define SOC_LEDC_CHANNEL_NUM                (8)
+#define SOC_LEDC_TIMER_BIT_WIDTH            (20)
+#define SOC_LEDC_SUPPORT_FADE_STOP          (1)
+#define SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED (1)
+#define SOC_LEDC_GAMMA_CURVE_FADE_RANGE_MAX (16)
+#define SOC_LEDC_FADE_PARAMS_BIT_WIDTH      (10)
+#define SOC_LEDC_SUPPORT_SLEEP_RETENTION    (1)
+#define SOC_LEDC_SUPPORT_ETM                (1)
 
 /*--------------------------- RMT CAPS ---------------------------------------*/
 #define SOC_RMT_MEM_WORDS_PER_CHANNEL         48 /*!< Each channel owns 48 words memory (1 word = 4 Bytes) */
@@ -228,11 +237,11 @@
 #define SOC_MMU_PER_EXT_MEM_TARGET            (1) /*!< MMU is per physical external memory target (flash, psram) */
 
 /*-------------------------- SPI CAPS ----------------------------------------*/
-// TODO: [ESP32S31] IDF-14734
-#define SOC_SPI_PERIPH_NUM              3
-#define SOC_SPI_PERIPH_CS_NUM(i)        (((i)==0)? 2: (((i)==1)? 6: 3))
-#define SOC_SPI_MAXIMUM_BUFFER_SIZE     64
-#define SOC_SPI_MAX_BITWIDTH(host_id)   ((host_id == 2) ? 4 : 8) // Supported line mode: SPI3: 1, 2, 4, SPI1/2: 1, 2, 4, 8
+#define SOC_SPI_PERIPH_NUM                  3
+#define SOC_SPI_MAXIMUM_BUFFER_SIZE         64
+#define SOC_SPI_SUPPORT_SLEEP_RETENTION     1
+#define SOC_SPI_SUPPORT_SLAVE_HD_VER2       1
+#define SOC_SPI_SUPPORT_OCT                 1
 
 /*-------------------------- SPIRAM CAPS ----------------------------------------*/
 #define SOC_SPIRAM_XIP_SUPPORTED        1
