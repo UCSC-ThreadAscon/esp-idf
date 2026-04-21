@@ -39,7 +39,6 @@
 #include "soc/lp_gpio_pins.h"
 #endif
 #endif
-#include "clk_ctrl_os.h"
 #include "esp_pm.h"
 
 #ifdef CONFIG_UART_ISR_IN_IRAM
@@ -225,6 +224,8 @@ static bool uart_module_enable(uart_port_t uart_num)
             PERIPH_RCC_ATOMIC() {
                 uart_ll_enable_bus_clock(uart_num, true);
             }
+            uart_ll_mem_set_low_power_mode(uart_num, UART_LL_MEM_LP_MODE_SHUT_DOWN);
+            uart_ll_mem_power_by_pmu(uart_num);
             if (uart_num != CONFIG_ESP_CONSOLE_UART_NUM) {
                 // Workaround: Set RX signal to high to avoid false RX BRK_DET interrupt raised after register reset
                 if (uart_context[uart_num].rx_io_num == -1) {
@@ -270,6 +271,8 @@ static bool uart_module_enable(uart_port_t uart_num)
                 gpio_pullup_en(io_num);
 #endif
             }
+            lp_uart_ll_mem_set_low_power_mode(UART_LL_MEM_LP_MODE_SHUT_DOWN);
+            lp_uart_ll_mem_power_by_pmu();
             PERIPH_RCC_ATOMIC() {
                 lp_uart_ll_enable_bus_clock(TO_LP_UART_NUM(uart_num), true);
                 lp_uart_ll_reset_register(TO_LP_UART_NUM(uart_num));
@@ -1087,11 +1090,6 @@ esp_err_t uart_param_config(uart_port_t uart_num, const uart_config_t *uart_conf
 
     // Enable the newly selected clock source
     esp_clk_tree_enable_src(uart_sclk_sel, true);
-#if SOC_UART_SUPPORT_RTC_CLK
-    if (uart_sclk_sel == (soc_module_clk_t)UART_SCLK_RTC) {
-        periph_rtc_dig_clk8m_enable();
-    }
-#endif
 
     bool success = false;
     UART_ENTER_CRITICAL(&(uart_context[uart_num].spinlock));
@@ -2139,11 +2137,6 @@ esp_err_t uart_driver_delete(uart_port_t uart_num)
 
     if (uart_num != CONFIG_ESP_CONSOLE_UART_NUM) {
         esp_clk_tree_enable_src(uart_context[uart_num].sclk_sel, false);
-#if SOC_UART_SUPPORT_RTC_CLK
-        if (uart_context[uart_num].sclk_sel == (soc_module_clk_t)UART_SCLK_RTC) {
-            periph_rtc_dig_clk8m_disable();
-        }
-#endif
         uart_context[uart_num].sclk_sel = -1;
     }
 
@@ -2348,11 +2341,6 @@ esp_err_t uart_detect_bitrate_start(uart_port_t uart_num, const uart_bitrate_det
         uint32_t sclk_freq = 0;
         ESP_GOTO_ON_ERROR(esp_clk_tree_src_get_freq_hz(uart_sclk_sel, ESP_CLK_TREE_SRC_FREQ_PRECISION_CACHED, &sclk_freq), err, UART_TAG, "invalid source_clk");
         esp_clk_tree_enable_src(uart_sclk_sel, true);
-#if SOC_UART_SUPPORT_RTC_CLK
-        if (uart_sclk_sel == (soc_module_clk_t)UART_SCLK_RTC) {
-            periph_rtc_dig_clk8m_enable();
-        }
-#endif
         UART_ENTER_CRITICAL(&(uart_context[uart_num].spinlock));
         PERIPH_RCC_ATOMIC() {
             uart_hal_set_sclk(&(uart_context[uart_num].hal), uart_sclk_sel);
@@ -2436,11 +2424,6 @@ esp_err_t uart_detect_bitrate_stop(uart_port_t uart_num, bool deinit, uart_bitra
         uart_release_pin(uart_num, true, true, true, true, true, true);
         if (uart_num != CONFIG_ESP_CONSOLE_UART_NUM) {
             esp_clk_tree_enable_src(uart_context[uart_num].sclk_sel, false);
-#if SOC_UART_SUPPORT_RTC_CLK
-            if (src_clk == (soc_module_clk_t)UART_SCLK_RTC) {
-                periph_rtc_dig_clk8m_disable();
-            }
-#endif
             uart_context[uart_num].sclk_sel = -1;
         }
         uart_module_disable(uart_num);

@@ -17,6 +17,7 @@
 #include "soc/hp_alive_sys_reg.h"
 #include "soc/hp_alive_sys_struct.h"
 #include "soc/pmu_reg.h"
+#include "hal/clkout_channel.h"
 #include "hal/assert.h"
 #include "hal/log.h"
 #include "esp32s31/rom/rtc.h"
@@ -29,7 +30,6 @@
 #define CLK_LL_PLL_80M_FREQ_MHZ    (80)
 #define CLK_LL_PLL_160M_FREQ_MHZ   (160)
 #define CLK_LL_PLL_240M_FREQ_MHZ   (240)
-
 #define CLK_LL_PLL_320M_FREQ_MHZ   (320)
 
 #define CLK_LL_PLL_480M_FREQ_MHZ   (480)
@@ -51,8 +51,8 @@
 #define CLK_LL_APLL_MULTIPLIER_MAX_HZ (500000000) // 500 MHz
 
 /* APLL output frequency range */
-#define CLK_LL_APLL_MIN_HZ    (5303031)   // 5.303031 MHz, refer to 'periph_rtc_apll_freq_set' for the calculation
-#define CLK_LL_APLL_MAX_HZ    (125000000) // 125MHz, refer to 'periph_rtc_apll_freq_set' for the calculation
+#define CLK_LL_APLL_MIN_HZ    (5303031)   // 5.303031 MHz, refer to 'esp_clk_tree_apll_freq_set' for the calculation
+#define CLK_LL_APLL_MAX_HZ    (125000000) // 125MHz, refer to 'esp_clk_tree_apll_freq_set' for the calculation
 
 #define CLK_LL_XTAL32K_CONFIG_DEFAULT() { \
     .dac = 7, \
@@ -898,6 +898,81 @@ static inline __attribute__((always_inline)) void clk_ll_rc_slow_set_divider(uin
 {
     // No divider on the target
     HAL_ASSERT(divider == 1);
+}
+
+/************************** CLOCK OUTPUT **************************/
+/**
+ * @brief Clock output channel configuration
+ *
+ * @param clk_sig The clock signal source to be mapped to GPIOs (raw `reg_dbg_chX_sel` mux index)
+ * @param channel_id The clock output channel ID
+ */
+static inline __attribute__((always_inline)) void clk_ll_bind_output_channel(soc_clkout_sig_id_t clk_sig, clock_out_channel_t channel_id)
+{
+    switch (channel_id) {
+    case CLKOUT_CHANNEL_1:
+        HAL_FORCE_MODIFY_U32_REG_FIELD(HP_SYS_CLKRST.dbg0_clk_ctrl0, reg_dbg_ch0_sel, clk_sig);
+        break;
+    case CLKOUT_CHANNEL_2:
+        HAL_FORCE_MODIFY_U32_REG_FIELD(HP_SYS_CLKRST.dbg1_clk_ctrl0, reg_dbg_ch1_sel, clk_sig);
+        break;
+    case CLKOUT_CHANNEL_3:
+        HAL_FORCE_MODIFY_U32_REG_FIELD(HP_SYS_CLKRST.dbg2_clk_ctrl0, reg_dbg_ch2_sel, clk_sig);
+        break;
+    default:
+        HAL_ASSERT(false && "invalid clock output channel");
+        break;
+    }
+}
+
+/**
+ * @brief Enable the clock output channel
+ *
+ * @param channel_id The clock output channel ID
+ * @param enable Enable or disable the clock output channel
+ */
+static inline __attribute__((always_inline)) void clk_ll_enable_output_channel(clock_out_channel_t channel_id, bool enable)
+{
+    switch (channel_id) {
+    case CLKOUT_CHANNEL_1:
+        HAL_FORCE_MODIFY_U32_REG_FIELD(HP_SYS_CLKRST.dbg0_clk_ctrl0, reg_dbg_ch0_en, enable);
+        break;
+    case CLKOUT_CHANNEL_2:
+        HAL_FORCE_MODIFY_U32_REG_FIELD(HP_SYS_CLKRST.dbg1_clk_ctrl0, reg_dbg_ch1_en, enable);
+        break;
+    case CLKOUT_CHANNEL_3:
+        HAL_FORCE_MODIFY_U32_REG_FIELD(HP_SYS_CLKRST.dbg2_clk_ctrl0, reg_dbg_ch2_en, enable);
+        break;
+    default:
+        HAL_ASSERT(false && "invalid clock output channel");
+        break;
+    }
+}
+
+/**
+ * @brief Output the mapped clock after frequency division
+ *
+ * @param channel_id The clock output channel ID
+ * @param div_num Divider value N such that output frequency is (input / N). Written to hardware as (N - 1).
+ *                Must be in [1, 256] to match the 8-bit `reg_dbg_chX_div_num` field.
+ */
+static inline __attribute__((always_inline)) void clk_ll_set_output_channel_divider(clock_out_channel_t channel_id, uint32_t div_num)
+{
+    HAL_ASSERT(div_num >= 1 && div_num <= 256);
+    switch (channel_id) {
+    case CLKOUT_CHANNEL_1:
+        HAL_FORCE_MODIFY_U32_REG_FIELD(HP_SYS_CLKRST.dbg0_clk_ctrl0, reg_dbg_ch0_div_num, div_num - 1);
+        break;
+    case CLKOUT_CHANNEL_2:
+        HAL_FORCE_MODIFY_U32_REG_FIELD(HP_SYS_CLKRST.dbg1_clk_ctrl0, reg_dbg_ch1_div_num, div_num - 1);
+        break;
+    case CLKOUT_CHANNEL_3:
+        HAL_FORCE_MODIFY_U32_REG_FIELD(HP_SYS_CLKRST.dbg2_clk_ctrl0, reg_dbg_ch2_div_num, div_num - 1);
+        break;
+    default:
+        HAL_ASSERT(false && "invalid clock output channel");
+        break;
+    }
 }
 
 /************************** LP STORAGE REGISTER STORE/LOAD **************************/
