@@ -28,7 +28,7 @@
 #define SOC_DEDICATED_GPIO_SUPPORTED    1
 #define SOC_UART_SUPPORTED              1
 #define SOC_GDMA_SUPPORTED              1
-// #define SOC_UHCI_SUPPORTED              1      // TODO: [ESP32S31] IDF-14791
+#define SOC_UHCI_SUPPORTED              1
 #define SOC_AHB_GDMA_SUPPORTED          1
 #define SOC_AXI_GDMA_SUPPORTED          1
 #define SOC_LP_AHB_GDMA_SUPPORTED       1
@@ -111,6 +111,7 @@
 
 #define SOC_PHY_SUPPORTED                1
 #define SOC_WIFI_SUPPORTED               1
+#define SOC_IEEE802154_SUPPORTED        1
 #define SOC_PHY_CALIBRATION_CLOCK_IS_INDEPENDENT 1
 /*-------------------------- XTAL CAPS ---------------------------------------*/
 #define SOC_XTAL_SUPPORT_40M            1
