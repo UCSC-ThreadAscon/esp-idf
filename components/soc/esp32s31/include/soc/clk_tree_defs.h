@@ -161,6 +161,23 @@ typedef enum {
     SOC_MOD_CLK_INVALID,                       /*!< Indication of the end of the available module clock sources */
 } soc_module_clk_t;
 
+//////////////////////////////////////////////////LCD///////////////////////////////////////////////////////////////////
+
+/**
+ * @brief Array initializer for all supported clock sources of LCD
+ */
+#define SOC_LCD_CLKS {SOC_MOD_CLK_PLL_F160M, SOC_MOD_CLK_XTAL, SOC_MOD_CLK_APLL}
+
+/**
+ * @brief Type of LCD clock source
+ */
+typedef enum {
+    LCD_CLK_SRC_PLL160M = SOC_MOD_CLK_PLL_F160M, /*!< Select PLL_F160M as the source clock */
+    LCD_CLK_SRC_XTAL = SOC_MOD_CLK_XTAL,         /*!< Select XTAL as the source clock */
+    LCD_CLK_SRC_APLL = SOC_MOD_CLK_APLL,         /*!< Select APLL as the source clock */
+    LCD_CLK_SRC_DEFAULT = SOC_MOD_CLK_PLL_F160M, /*!< Select PLL_F160M as the default choice */
+} soc_periph_lcd_clk_src_t;
+
 //////////////////////////////////////////////////SYSTIMER//////////////////////////////////////////////////////////////
 
 /**
@@ -458,6 +475,25 @@ typedef enum {
     MCPWM_CARRIER_CLK_SRC_PLL160M = SOC_MOD_CLK_PLL_F160M,   /*!< Select PLL_F160M as the source clock */
     MCPWM_CARRIER_CLK_SRC_DEFAULT = SOC_MOD_CLK_PLL_F160M,   /*!< Select PLL_F160M as the default choice */
 } soc_periph_mcpwm_carrier_clk_src_t;
+
+//////////////////////////////////////////////////I2S/////////////////////////////////////////////////////////////////
+
+/**
+ * @brief I2S clock source
+ */
+#define SOC_I2S_CLKS {SOC_MOD_CLK_XTAL, SOC_MOD_CLK_APLL, SOC_MOD_CLK_RTC_FAST, I2S_CLK_SRC_EXTERNAL}
+
+/**
+ * @brief I2S clock source enum
+ * @note Enum values are matched with the register field values on purpose
+ */
+typedef enum {
+    I2S_CLK_SRC_DEFAULT = SOC_MOD_CLK_XTAL,                            /*!< Auto select maximum clock source as default source clock */
+    I2S_CLK_SRC_XTAL = SOC_MOD_CLK_XTAL,                /*!< Select XTAL as the source clock */
+    I2S_CLK_SRC_APLL = SOC_MOD_CLK_APLL,                /*!< Select APLL as the source clock */
+    I2S_CLK_SRC_RTC_FAST = SOC_MOD_CLK_RTC_FAST,        /*!< Select RTC_FAST as the source clock */
+    I2S_CLK_SRC_EXTERNAL = -1,                          /*!< Select external clock as source clock */
+} soc_periph_i2s_clk_src_t;
 
 //////////////////////////////////////////////CLOCK OUTPUT///////////////////////////////////////////////////////////
 typedef enum {

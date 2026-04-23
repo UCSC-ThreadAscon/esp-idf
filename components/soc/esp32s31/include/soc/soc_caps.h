@@ -35,10 +35,12 @@
 #define SOC_DMA2D_SUPPORTED             1
 #define SOC_GPTIMER_SUPPORTED           1
 // #define SOC_PCNT_SUPPORTED              1      // TODO: [ESP32S31] IDF-14699
-// #define SOC_LCDCAM_SUPPORTED            1      // TODO: [ESP32S31] IDF-14722
+#define SOC_LCDCAM_SUPPORTED            1
 // #define SOC_LCDCAM_CAM_SUPPORTED        1      // TODO: [ESP32S31] IDF-14722
-// #define SOC_LCDCAM_I80_LCD_SUPPORTED    1      // TODO: [ESP32S31] IDF-14722
-// #define SOC_LCDCAM_RGB_LCD_SUPPORTED    1      // TODO: [ESP32S31] IDF-14722
+#define SOC_LCDCAM_I80_LCD_SUPPORTED    1
+#define SOC_LCDCAM_RGB_LCD_SUPPORTED    1
+#define SOC_LCD_I80_SUPPORTED           1
+#define SOC_LCD_RGB_SUPPORTED           1
 #define SOC_MCPWM_SUPPORTED             1
 #define SOC_TWAI_SUPPORTED              1
 #define SOC_TWAI_FD_SUPPORTED           1
@@ -56,13 +58,13 @@
 #define SOC_RTC_FAST_MEM_SUPPORTED      1
 #define SOC_RTC_MEM_SUPPORTED           1      // TODO: [ESP32S31] IDF-14645
 #define SOC_RMT_SUPPORTED               1
-// #define SOC_I2S_SUPPORTED               1      // TODO: [ESP32S31] IDF-14771
+#define SOC_I2S_SUPPORTED               1
 #define SOC_SDM_SUPPORTED               1
 #define SOC_GPSPI_SUPPORTED             1
 #define SOC_LEDC_SUPPORTED              1
 // #define SOC_ISP_SUPPORTED               1      // TODO: [ESP32S31] IDF-14769
 #define SOC_I2C_SUPPORTED               1
-#define SOC_SYSTIMER_SUPPORTED          1         // TODO: [ESP32S31] IDF-14693
+#define SOC_SYSTIMER_SUPPORTED          1
 #define SOC_AES_SUPPORTED               1
 #define SOC_MPI_SUPPORTED               1
 #define SOC_SHA_SUPPORTED               1
@@ -82,11 +84,12 @@
 #define SOC_LP_PERIPHERALS_SUPPORTED    1
 #define SOC_LP_I2C_SUPPORTED            1
 // #define SOC_LP_SPI_SUPPORTED            1      // TODO: [ESP32S31] IDF-14639
-#define SOC_SPIRAM_SUPPORTED            1      // TODO: [ESP32S31] IDF-14718
+#define SOC_SPIRAM_SUPPORTED            1
 #define SOC_PSRAM_DMA_CAPABLE           1
 // #define SOC_SDMMC_HOST_SUPPORTED        1      // TODO: [ESP32S31] IDF-14705
 #define SOC_CLK_TREE_SUPPORTED          1
 #define SOC_ASSIST_DEBUG_SUPPORTED      1
+#define SOC_CPU_LOCKUP_DEBUG_SUPPORTED  1
 // #define SOC_DEBUG_PROBE_SUPPORTED       1      // TODO: [ESP32S31] IDF-14798
 #define SOC_WDT_SUPPORTED               1
 #define SOC_RTC_WDT_SUPPORTED           1
@@ -111,7 +114,8 @@
 
 #define SOC_PHY_SUPPORTED                1
 #define SOC_WIFI_SUPPORTED               1
-#define SOC_IEEE802154_SUPPORTED        1
+#define SOC_IEEE802154_SUPPORTED         1
+#define SOC_BT_SUPPORTED                 1
 #define SOC_PHY_CALIBRATION_CLOCK_IS_INDEPENDENT 1
 /*-------------------------- XTAL CAPS ---------------------------------------*/
 #define SOC_XTAL_SUPPORT_40M            1
@@ -387,12 +391,14 @@
 
 #define SOC_CLK_RC_FAST_SUPPORT_CALIBRATION       (1)
 
-// #define SOC_CLK_APLL_SUPPORTED                    (1)     /*!< Support Audio PLL */ // TODO: IDF-14771, IDF-14750
-#define SOC_CLK_MPLL_SUPPORTED                    (1)     /*!< Support MSPI PLL */ // TODO: IDF-14718
+#define SOC_CLK_APLL_SUPPORTED                    (1)     /*!< Support Audio PLL */
+#define SOC_CLK_MPLL_SUPPORTED                    (1)     /*!< Support MSPI PLL */
 #define SOC_CLK_XTAL32K_SUPPORTED                 (1)     /*!< Support to connect an external low frequency crystal */
 #define SOC_CLK_RC32K_SUPPORTED                   (1)     /*!< Support an internal 32kHz RC oscillator */
 
 #define SOC_CLK_LP_FAST_SUPPORT_XTAL              (1)     /*!< Support XTAL clock as the LP_FAST clock source */
+
+#define SOC_CLK_ANA_I2C_MST_HAS_ROOT_GATE         (1)     /*!< Any regi2c operation needs enable the analog i2c master clock first */
 
 #define SOC_RCC_IS_INDEPENDENT                    1       /*!< Reset and Clock Control has own registers for each module */
 /*-------------------------- Memory CAPS --------------------------*/
@@ -452,6 +458,7 @@
 #define SOC_LP_CORE_SUPPORT_ETM                     (1) /*!< LP Core supports ETM wakeup */
 #define SOC_LP_CORE_CONFIGURABLE_BOOT_ADDR          (1) /*!< LP Core has no LP ROM; HP must write the reset_vector address (LP_RAM_BASE+0x80) to LP_SYS.lp_core_boot_addr before triggering LP wake */
 //#define SOC_LP_CORE_SUPPORT_I2C                     (1) /*!< LP Core supports I2C */ TODO IDF-14635
+#define SOC_LP_CORE_HW_AUTO_CLRWAKEUPCAUSE          (1) /*!< LP core requests sleep, PMU clears both HP and LP wakeup causes */
 
 /*-------------------------- LP_TIMER CAPS ----------------------------------*/
 #define SOC_LP_TIMER_BIT_WIDTH_LO           32 // Bit width of lp_timer low part
@@ -468,6 +475,7 @@
 /*--------------------------- JPEG --------------------------------*/
 #define SOC_JPEG_DECODE_SUPPORTED                 (1)
 #define SOC_JPEG_ENCODE_SUPPORTED                 (1)
+
 /*------------------------------------ WI-FI CAPS ------------------------------------*/
 #define SOC_WIFI_HW_TSF                     (1)    /*!< Support hardware TSF */
 #define SOC_WIFI_FTM_SUPPORT                (1)    /*!< Support FTM */
@@ -481,3 +489,39 @@
 
 /*--------------- WIFI LIGHT SLEEP CLOCK WIDTH CAPS --------------------------*/
 #define SOC_WIFI_LIGHT_SLEEP_CLK_WIDTH  (12)
+
+/*---------------------------------- Bluetooth CAPS ----------------------------------*/
+#define SOC_BT_CLASSIC_SUPPORTED                    (1)     /*!< Support Bluetooth Classic hardware */
+#define SOC_BLE_SUPPORTED                           (1)     /*!< Support Bluetooth Low Energy hardware */
+// #define SOC_BLE_MESH_SUPPORTED                      (1)     /*!< Support BLE MESH */
+#define SOC_ESP_NIMBLE_CONTROLLER                   (1)     /*!< Support BLE EMBEDDED controller V1 */
+#define SOC_BLE_50_SUPPORTED                        (1)     /*!< Support Bluetooth 5.0 */
+#define SOC_BLE_DEVICE_PRIVACY_SUPPORTED            (1)     /*!< Support BLE device privacy mode */
+#define SOC_BLE_POWER_CONTROL_SUPPORTED             (1)     /*!< Support Bluetooth Power Control */
+#define SOC_BLE_MULTI_CONN_OPTIMIZATION             (1)     /*!< Support multiple connections optimization */
+#define SOC_BLE_PERIODIC_ADV_ENH_SUPPORTED          (1)     /*!< Support For BLE Periodic Adv Enhancements */
+// #define SOC_BLUFI_SUPPORTED                         (1)  // TODO: enable this feature coexistence is supported
+#define SOC_BLE_CTE_SUPPORTED                       (1)     /*!< Support Bluetooth LE Constant Tone Extension (CTE) */
+#define SOC_BLE_SUBRATE_SUPPORTED                   (1)     /*!< Support Bluetooth LE Connection Subrating */
+#define SOC_BLE_PERIODIC_ADV_WITH_RESPONSE          (1)     /*!< Support Bluetooth LE Periodic Advertising with Response (PAwR) */
+// #define SOC_BLE_ISO_SUPPORTED                       (1)     /*!< Support Bluetooth ISO */
+
+/*-------------------------- I2S CAPS ----------------------------------------*/
+#define SOC_I2S_NUM                          (2U)
+#define SOC_I2S_HW_VERSION_2                 (1)
+#define SOC_I2S_SUPPORTS_ETM                  (1)
+#define SOC_I2S_SUPPORTS_APLL                 (1)
+#define SOC_I2S_SUPPORTS_RTC_FAST             (1)     // Support RTC_FAST as I2S clock source
+#define SOC_I2S_SUPPORTS_EXTERNAL             (1)     // Support External clock source
+#define SOC_I2S_SUPPORTS_PCM                  (1)
+#define SOC_I2S_SUPPORTS_PDM                  (1)
+#define SOC_I2S_SUPPORTS_PDM_TX               (1)     // Support to output raw PDM format data
+#define SOC_I2S_SUPPORTS_PCM2PDM              (1)     // Support to write PCM format but output PDM format data with the help of PCM to PDM filter
+#define SOC_I2S_SUPPORTS_PDM_RX               (1)     // Support to input raw PDM format data
+#define SOC_I2S_SUPPORTS_PDM2PCM              (1)     // Support to input PDM format but read PCM format data with the help of PDM to PCM filter (only on I2S0)
+#define SOC_I2S_SUPPORTS_PDM_RX_HP_FILTER    (1)
+#define SOC_I2S_SUPPORTS_TX_SYNC_CNT          (1)     // Support TX synchronization count (ideal_cnt)
+#define SOC_I2S_SUPPORTS_RX_RECOMB            (1)     // Support RX recomb for DMA data format reorganization
+#define SOC_I2S_SUPPORTS_TDM                  (1)
+#define SOC_I2S_PDM_MAX_TX_LINES              (2)     // On I2S0
+#define SOC_I2S_PDM_MAX_RX_LINES              (4)     // On I2S0
