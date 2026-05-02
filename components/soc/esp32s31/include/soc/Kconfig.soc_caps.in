@@ -851,6 +851,14 @@ config SOC_EFUSE_ECDSA_KEY
     bool
     default y
 
+config SOC_EFUSE_ECDSA_KEY_P192
+    bool
+    default y
+
+config SOC_EFUSE_ECDSA_KEY_P384
+    bool
+    default y
+
 config SOC_KEY_MANAGER_ECDSA_KEY_DEPLOY
     bool
     default y
@@ -1223,6 +1231,10 @@ config SOC_BLE_SUPPORTED
     bool
     default y
 
+config SOC_BLE_MESH_SUPPORTED
+    bool
+    default y
+
 config SOC_BLE_ISO_SUPPORTED
     bool
     default y
@@ -1270,10 +1282,6 @@ config SOC_BLE_SUBRATE_SUPPORTED
 config SOC_BLE_PERIODIC_ADV_WITH_RESPONSE
     bool
     default y
-
-config SOC_I2S_NUM
-    int
-    default 2
 
 config SOC_I2S_HW_VERSION_2
     bool
@@ -1342,3 +1350,7 @@ config SOC_I2S_PDM_MAX_TX_LINES
 config SOC_I2S_PDM_MAX_RX_LINES
     int
     default 4
+
+config SOC_ASRC_SUPPORTED
+    bool
+    default y

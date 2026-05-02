@@ -53,8 +53,8 @@
 // #define SOC_SUPPORTS_SECURE_DL_MODE     1      // TODO: [ESP32S31] IDF-14629
 #define SOC_ULP_SUPPORTED               1
 #define SOC_LP_CORE_SUPPORTED           1
-#define SOC_EFUSE_KEY_PURPOSE_FIELD     1         // TODO: [ESP32S31] IDF-14688
-#define SOC_EFUSE_SUPPORTED             1         // TODO: [ESP32S31] IDF-14688
+#define SOC_EFUSE_KEY_PURPOSE_FIELD     1
+#define SOC_EFUSE_SUPPORTED             1
 #define SOC_RTC_FAST_MEM_SUPPORTED      1
 #define SOC_RTC_MEM_SUPPORTED           1      // TODO: [ESP32S31] IDF-14645
 #define SOC_RMT_SUPPORTED               1
@@ -348,17 +348,19 @@
 #define SOC_ECC_SUPPORT_CURVE_P384      (1)
 
 /*-------------------------- eFuse CAPS----------------------------*/
-// TODO: [ESP32S31] IDF-14688
 #define SOC_EFUSE_DIS_PAD_JTAG 1
 #define SOC_EFUSE_DIS_USB_JTAG 1
 #define SOC_EFUSE_DIS_DIRECT_BOOT 1
 #define SOC_EFUSE_SOFT_DIS_JTAG 1
 /* Capability to disable the MSPI access in download mode */
 #define SOC_EFUSE_DIS_DOWNLOAD_MSPI 1
+// ECDSA_P256_KEY
 #define SOC_EFUSE_ECDSA_KEY 1
+#define SOC_EFUSE_ECDSA_KEY_P192 1
+#define SOC_EFUSE_ECDSA_KEY_P384 1
 
 /*-------------------------- Key Manager CAPS----------------------------*/
-// TODO: [ESP32S31] IDF-14688
+// TODO: [ESP32S31] IDF-14626
 #define SOC_KEY_MANAGER_ECDSA_KEY_DEPLOY    1 /*!< Key manager responsible to deploy ECDSA key */
 // #define SOC_KEY_MANAGER_FE_KEY_DEPLOY       1 /*!< Key manager responsible to deploy Flash Encryption key */
 /*-------------------------- Secure Boot CAPS----------------------------*/
@@ -506,7 +508,7 @@
 /*---------------------------------- Bluetooth CAPS ----------------------------------*/
 #define SOC_BT_CLASSIC_SUPPORTED                    (1)     /*!< Support Bluetooth Classic hardware */
 #define SOC_BLE_SUPPORTED                           (1)     /*!< Support Bluetooth Low Energy hardware */
-// #define SOC_BLE_MESH_SUPPORTED                      (1)     /*!< Support BLE MESH */
+#define SOC_BLE_MESH_SUPPORTED                      (1)     /*!< Support BLE MESH */
 #define SOC_BLE_ISO_SUPPORTED                       (1)     /*!< Support BLE ISO */
 #define SOC_BLE_AUDIO_SUPPORTED                     (1)     /*!< Support BLE Audio */
 #define SOC_ESP_NIMBLE_CONTROLLER                   (1)     /*!< Support BLE EMBEDDED controller V1 */
@@ -521,11 +523,10 @@
 #define SOC_BLE_PERIODIC_ADV_WITH_RESPONSE          (1)     /*!< Support Bluetooth LE Periodic Advertising with Response (PAwR) */
 
 /*-------------------------- I2S CAPS ----------------------------------------*/
-#define SOC_I2S_NUM                          (2U)
-#define SOC_I2S_HW_VERSION_2                 (1)
+#define SOC_I2S_HW_VERSION_2                  (1)
 #define SOC_I2S_SUPPORTS_ETM                  (1)
 #define SOC_I2S_SUPPORTS_APLL                 (1)
-#define SOC_I2S_SUPPORTS_RC_FAST             (1)     // Support RC_FAST as I2S clock source
+#define SOC_I2S_SUPPORTS_RC_FAST              (1)     // Support RC_FAST as I2S clock source
 #define SOC_I2S_SUPPORTS_EXTERNAL             (1)     // Support External clock source
 #define SOC_I2S_SUPPORTS_PCM                  (1)
 #define SOC_I2S_SUPPORTS_PDM                  (1)
@@ -533,9 +534,12 @@
 #define SOC_I2S_SUPPORTS_PCM2PDM              (1)     // Support to write PCM format but output PDM format data with the help of PCM to PDM filter
 #define SOC_I2S_SUPPORTS_PDM_RX               (1)     // Support to input raw PDM format data
 #define SOC_I2S_SUPPORTS_PDM2PCM              (1)     // Support to input PDM format but read PCM format data with the help of PDM to PCM filter (only on I2S0)
-#define SOC_I2S_SUPPORTS_PDM_RX_HP_FILTER    (1)
+#define SOC_I2S_SUPPORTS_PDM_RX_HP_FILTER     (1)
 #define SOC_I2S_SUPPORTS_TX_SYNC_CNT          (1)     // Support TX synchronization count (ideal_cnt)
 #define SOC_I2S_SUPPORTS_RX_RECOMB            (1)     // Support RX recomb for DMA data format reorganization
 #define SOC_I2S_SUPPORTS_TDM                  (1)
 #define SOC_I2S_PDM_MAX_TX_LINES              (2)     // On I2S0
 #define SOC_I2S_PDM_MAX_RX_LINES              (4)     // On I2S0
+
+/*---------------------------------- ASRC CAPS ----------------------------------*/
+#define SOC_ASRC_SUPPORTED (1)
