@@ -24,7 +24,7 @@
 
 /*-------------------------- COMMON CAPS ---------------------------------------*/
 // #define SOC_ADC_SUPPORTED               1      // TODO: [ESP32S31] IDF-14741
-// #define SOC_ANA_CMPR_SUPPORTED          1      // TODO: [ESP32S31] IDF-14787
+#define SOC_ANA_CMPR_SUPPORTED          1
 #define SOC_DEDICATED_GPIO_SUPPORTED    1
 #define SOC_UART_SUPPORTED              1
 #define SOC_GDMA_SUPPORTED              1
@@ -79,7 +79,7 @@
 #define SOC_PAU_SUPPORTED                  1
 #define SOC_PMU_SUPPORTED                  1
 #define SOC_RTC_TIMER_SUPPORTED            1
-// #define SOC_ULP_LP_UART_SUPPORTED       1      // TODO: [ESP32S31] IDF-14634
+#define SOC_ULP_LP_UART_SUPPORTED       1
 #define SOC_LP_GPIO_MATRIX_SUPPORTED    1
 #define SOC_LP_PERIPHERALS_SUPPORTED    1
 #define SOC_LP_I2C_SUPPORTED            1
@@ -106,6 +106,10 @@
 #define SOC_CORDIC_SUPPORTED            1
 #define SOC_REGI2C_SUPPORTED            1
 #define SOC_JPEG_CODEC_SUPPORTED        1
+
+/*------------------------- Analog Comparator CAPS ---------------------------*/
+#define SOC_ANA_CMPR_SUPPORT_ETM        (1)
+#define SOC_ANA_CMPR_SUPPORT_ETM_SCAN   (1)
 
 /*-------------------------- USB CAPS ----------------------------------------*/
 #define SOC_USB_OTG_PERIPH_NUM          (1U)
