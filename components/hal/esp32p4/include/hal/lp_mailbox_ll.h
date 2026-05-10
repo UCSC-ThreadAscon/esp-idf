@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2025 Espressif Systems (Shanghai) CO LTD
+ * SPDX-FileCopyrightText: 2025-2026 Espressif Systems (Shanghai) CO LTD
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -21,6 +21,26 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/**
+ * @brief Enable the mailbox peripheral clock.
+ *
+ * @param dev Pointer to the LP mailbox device structure.
+ */
+FORCE_INLINE_ATTR void lp_mailbox_ll_enable_clock(lp_mb_dev_t *dev)
+{
+    dev->reg_clk_en.reg_clk_en = 1;
+}
+
+/**
+ * @brief Reset the mailbox peripheral registers.
+ *
+ * @param dev Pointer to the LP mailbox device structure.
+ */
+FORCE_INLINE_ATTR void lp_mailbox_ll_reset_register(lp_mb_dev_t *dev)
+{
+    (void) dev;
+}
 
 
 /**

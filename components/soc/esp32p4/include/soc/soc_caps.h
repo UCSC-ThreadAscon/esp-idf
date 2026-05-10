@@ -285,7 +285,7 @@
 #define SOC_GPIO_CLOCKOUT_CHANNEL_NUM            (2)
 #define SOC_CLOCKOUT_SUPPORT_CHANNEL_DIVIDER     (1)
 
-#define SOC_DEBUG_PROBE_NUM_UNIT                 (1U)  // Number of debug probe units
+#define SOC_DEBUG_PROBE_NUM_UNIT                 (2U)  // Unit 0: HP probe, Unit 1: LP probe
 #define SOC_DEBUG_PROBE_MAX_OUTPUT_WIDTH         (16) // Maximum width of the debug probe output in each unit
 
 /*-------------------------- RTCIO CAPS --------------------------------------*/
@@ -432,6 +432,7 @@
 // USB OTG Caps
 #define SOC_USB_OTG_PERIPH_NUM          (2U)
 #define SOC_USB_FSLS_PHY_NUM            (1U)
+#define SOC_USB_OTG_NEED_SOFTWARE_SUSPEND_BEFORE_SLEEP (1)
 
 // USB PHY Caps
 #define SOC_USB_UTMI_PHY_NUM            (1U)
@@ -533,6 +534,7 @@
 #define SOC_MSPI_HAS_INDEPENT_IOMUX               1
 #define SOC_MEMSPI_IS_INDEPENDENT                 1
 #define SOC_MEMSPI_SUPPORT_CONTROL_DUMMY_OUT      1
+#define SOC_PSRAM_MEMSPI_IS_INDEPENDENT           1
 
 #define SOC_SPI_MEM_FLASH_SUPPORT_HPM                         (1) /*!< Support High Performance Mode */
 
@@ -683,6 +685,8 @@
 #define SOC_SLEEP_TGWDT_STOP_WORKAROUND     1    //TODO IDF-11381: replace with all xtal field clk gate control
 
 #define SOC_PM_RETENTION_MODULE_NUM         (64)
+
+#define SOC_MAIN_POWER_CONTROL_SUPPORTED    (1)  /*!<Supports outputting an enable signal to control the power-on and power-off of the main power supply when powered by VBAT.*/
 
 /*-------------------------- CLOCK SUBSYSTEM CAPS ----------------------------------------*/
 #define SOC_CLK_RC_FAST_SUPPORT_CALIBRATION       (1)
