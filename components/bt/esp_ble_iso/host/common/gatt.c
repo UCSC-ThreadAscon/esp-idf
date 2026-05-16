@@ -128,10 +128,9 @@ struct bt_gatt_attr *bt_gatts_find_attr_by_handle(uint16_t handle)
                 break;
             }
         }
-    }
-
-    if (attr == NULL) {
-        LOG_WRN("AttrNotFound[%u]", handle);
+        if (attr != NULL) {
+            break;
+        }
     }
 
     return attr;
@@ -409,6 +408,8 @@ ssize_t bt_gatt_attr_read(struct bt_conn *conn, const struct bt_gatt_attr *attr,
 _LIB_ONLY
 int bt_gatt_notify_cb(struct bt_conn *conn, struct bt_gatt_notify_params *params)
 {
+    int err;
+
     assert(params);
 
     LOG_DBG("GattNtfCb[%u]", params->len);
@@ -418,7 +419,16 @@ int bt_gatt_notify_cb(struct bt_conn *conn, struct bt_gatt_notify_params *params
         return -ENOTCONN;
     }
 
-    return bt_le_nimble_gatts_notify(conn, params);
+    err = bt_le_nimble_gatts_notify(conn, params);
+
+    /* gatts_notify is synchronous (mbuf-copy + dispatch on return); fire the
+     * caller's completion cb here so state machines like PACS_FLAG_NOTIFY_RDY
+     * advance. */
+    if (err == 0 && params->func != NULL) {
+        params->func(conn, params->user_data);
+    }
+
+    return err;
 }
 
 _LIB_IDF

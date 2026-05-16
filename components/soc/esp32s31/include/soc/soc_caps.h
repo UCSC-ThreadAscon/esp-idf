@@ -23,7 +23,7 @@
 #define _SOC_CAPS_TARGET_IS_ESP32S31       1 // [gen_soc_caps:ignore]
 
 /*-------------------------- COMMON CAPS ---------------------------------------*/
-// #define SOC_ADC_SUPPORTED               1      // TODO: [ESP32S31] IDF-14741
+#define SOC_ADC_SUPPORTED               1
 #define SOC_ANA_CMPR_SUPPORTED          1
 #define SOC_DEDICATED_GPIO_SUPPORTED    1
 #define SOC_UART_SUPPORTED              1
@@ -35,7 +35,7 @@
 #define SOC_DMA2D_SUPPORTED             1
 #define SOC_GPTIMER_SUPPORTED           1
 #define SOC_LCDCAM_SUPPORTED            1
-// #define SOC_LCDCAM_CAM_SUPPORTED        1      // TODO: [ESP32S31] IDF-14722
+#define SOC_LCDCAM_CAM_SUPPORTED        1
 #define SOC_LCDCAM_I80_LCD_SUPPORTED    1
 #define SOC_LCDCAM_RGB_LCD_SUPPORTED    1
 #define SOC_LCD_I80_SUPPORTED           1
@@ -74,7 +74,7 @@
 #define SOC_ECC_EXTENDED_MODES_SUPPORTED   1
 // #define SOC_FLASH_ENC_SUPPORTED         1         // TODO: [ESP32S31] IDF-14628
 // #define SOC_SECURE_BOOT_SUPPORTED       1      // TODO: [ESP32S31] IDF-14629
-// #define SOC_BOD_SUPPORTED               1      // TODO: [ESP32S31] IDF-14658
+#define SOC_BOD_SUPPORTED               1
 // #define SOC_APM_SUPPORTED               1      // TODO: [ESP32S31] IDF-14620
 #define SOC_PAU_SUPPORTED                  1
 #define SOC_PMU_SUPPORTED                  1
@@ -96,7 +96,7 @@
 #define SOC_SPI_FLASH_SUPPORTED         1         // TODO: [ESP32S31] IDF-14777
 #define SOC_SPI_FLASH_HAS_DEDICATED_LDO 1
 #define SOC_TOUCH_SENSOR_SUPPORTED      1
-// #define SOC_RNG_SUPPORTED               1      // TODO: [ESP32S31] IDF-14632
+#define SOC_RNG_SUPPORTED               1
 #define SOC_PPA_SUPPORTED               1
 #define SOC_LIGHT_SLEEP_SUPPORTED       1
 #define SOC_DEEP_SLEEP_SUPPORTED        1
@@ -128,8 +128,30 @@
 
 /*-------------------------- ADC CAPS ----------------------------------------*/
 /*!< SAR ADC Module*/
-#define SOC_ADC_MAX_CHANNEL_NUM                 (10)
+#define SOC_ADC_DIG_CTRL_SUPPORTED              1
 #define SOC_ADC_PERIPH_NUM                      (2)
+#define SOC_ADC_MAX_CHANNEL_NUM                 (8)
+#define SOC_ADC_CHANNEL_NUM(PERIPH_NUM)         (8)
+#define SOC_ADC_ATTEN_NUM                       (1U)
+#define SOC_ADC_RTC_MIN_BITWIDTH                (17)
+#define SOC_ADC_RTC_MAX_BITWIDTH                (17)
+
+#define SOC_ADC_DMA_SUPPORTED                   1
+#define SOC_ADC_DIGI_CONTROLLER_NUM             (2)
+#define SOC_ADC_PATT_LEN_MAX                    (16)
+#define SOC_ADC_DIGI_MIN_BITWIDTH               (17)
+#define SOC_ADC_DIGI_MAX_BITWIDTH               (17)
+#define SOC_ADC_DIGI_RESULT_BYTES               (4)
+#define SOC_ADC_DIGI_DATA_BYTES_PER_CONV        (4)
+#define SOC_ADC_DIG_SUPPORTED_UNIT(UNIT)        (1)
+#define SOC_ADC_SAMPLE_FREQ_THRES_HIGH          (83333U)
+#define SOC_ADC_SAMPLE_FREQ_THRES_LOW           (611U)
+#define SOC_ADC_DIGI_MONITOR_NUM                (2)
+
+#define SOC_ADC_DIFF_SUPPORTED                  (1)
+
+/*!< ADC power control is shared by PWDET, TempSensor */
+#define SOC_ADC_SHARED_POWER                    1
 
 /*-------------------------- CACHE CAPS --------------------------------------*/
 #define SOC_CACHE_WRITEBACK_SUPPORTED           1
@@ -169,8 +191,11 @@
 /*-------------------------- GDMA CAPS -------------------------------------*/
 #define SOC_AHB_GDMA_VERSION                2
 #define SOC_GDMA_SUPPORT_ETM                1
-// #define SOC_GDMA_SUPPORT_SLEEP_RETENTION    1 // TODO: [ESP32S31] IDF-14760
+#define SOC_GDMA_SUPPORT_SLEEP_RETENTION    1
 #define SOC_GDMA_EXT_MEM_ENC_ALIGNMENT   (16)
+
+/*-------------------------- MODEM CAPS --------------------------------------*/
+#define SOC_MODEM_SUPPORT_ETM               1
 
 /*-------------------------- APM CAPS ----------------------------------------*/
 #define SOC_APM_CTRL_FILTER_SUPPORTED   1 /*!< Support for APM control filter */
@@ -306,7 +331,7 @@
 
 /*--------------------------- TIMER GROUP CAPS ---------------------------------------*/
 #define SOC_TIMER_SUPPORT_ETM             (1)
-// #define SOC_TIMER_SUPPORT_SLEEP_RETENTION (1) // TODO: [ESP32S31] IDF-14746
+#define SOC_TIMER_SUPPORT_SLEEP_RETENTION (1)
 
 /*--------------------------- WATCHDOG CAPS ---------------------------------------*/
 #define SOC_MWDT_SUPPORT_XTAL              (1)
@@ -365,6 +390,10 @@
 // TODO: [ESP32S31] IDF-14626
 #define SOC_KEY_MANAGER_ECDSA_KEY_DEPLOY    1 /*!< Key manager responsible to deploy ECDSA key */
 // #define SOC_KEY_MANAGER_FE_KEY_DEPLOY       1 /*!< Key manager responsible to deploy Flash Encryption key */
+
+/*--------------------------- CAM ---------------------------------*/
+#define SOC_LCDCAM_CAM_SUPPORT_RGB_YUV_CONV         (1)
+
 /*-------------------------- Secure Boot CAPS----------------------------*/
 // TODO: [ESP32S31] IDF-14629
 #define SOC_EFUSE_SECURE_BOOT_KEY_DIGESTS   3
@@ -373,6 +402,12 @@
 // TODO: [ESP32S31] IDF-14628
 #define SOC_FLASH_ENCRYPTION_XTS_AES        1
 #define SOC_FLASH_ENCRYPTED_XTS_AES_BLOCK_MAX   (64)
+
+/*------------------------Bootloader CAPS---------------------------------*/
+/* Support Recovery Bootloader */
+#define SOC_RECOVERY_BOOTLOADER_SUPPORTED             (1)
+/* Support Anti-rollback */
+#define SOC_BOOTLOADER_ANTI_ROLLBACK_SUPPORTED        (1)
 
 /*-------------------------- UART CAPS ---------------------------------------*/
 #define SOC_UART_NUM                    (5)
@@ -477,8 +512,9 @@
 #define SOC_LP_MAILBOX_SUPPORTED                    (1) /*!< LP Core supports LP-mailbox */
 #define SOC_LP_CORE_SUPPORT_ETM                     (1) /*!< LP Core supports ETM wakeup */
 #define SOC_LP_CORE_CONFIGURABLE_BOOT_ADDR          (1) /*!< LP Core has no LP ROM; HP must write the reset_vector address (LP_RAM_BASE+0x80) to LP_SYS.lp_core_boot_addr before triggering LP wake */
-//#define SOC_LP_CORE_SUPPORT_I2C                     (1) /*!< LP Core supports I2C */ TODO IDF-14635
+#define SOC_LP_CORE_SUPPORT_I2C                     (1) /*!< LP Core supports I2C */
 #define SOC_LP_CORE_HW_AUTO_CLRWAKEUPCAUSE          (1) /*!< LP core requests sleep, PMU clears both HP and LP wakeup causes */
+#define SOC_LP_CORE_HAS_PMP                         (1) /*!< LP Core RISC-V has 16 PMP entries (128-byte granularity, RISC-V v1.10) */
 
 /*-------------------------- LP_TIMER CAPS ----------------------------------*/
 #define SOC_LP_TIMER_BIT_WIDTH_LO           32 // Bit width of lp_timer low part
@@ -490,7 +526,7 @@
 #define SOC_MCPWM_SUPPORT_ETM                (1)    ///< Support ETM (Event Task Matrix)
 #define SOC_MCPWM_SUPPORT_EVENT_COMPARATOR   (1)    ///< Support event comparator (based on ETM)
 #define SOC_MCPWM_CAPTURE_CLK_FROM_GROUP     (1)    ///< Capture timer shares clock with other PWM timers
-// #define SOC_MCPWM_SUPPORT_SLEEP_RETENTION    (1)    ///< Support back up registers before sleep
+#define SOC_MCPWM_SUPPORT_SLEEP_RETENTION    (1)    ///< Support back up registers before sleep
 
 /*--------------------------- JPEG --------------------------------*/
 #define SOC_JPEG_DECODE_SUPPORTED                 (1)

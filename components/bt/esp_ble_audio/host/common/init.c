@@ -178,12 +178,13 @@ static const uint16_t ext_structs[] = {
     sizeof(struct bt_bond_info),
 };
 
-#define LEA_VERSION     (0x20260430)
+#define LEA_VERSION     (0x20260514)
 
 struct lib_ext_cfgs {
     /* BLE */
     bool     config_past_sender;
     bool     config_past_receiver;
+    bool     config_past_check;
     uint8_t  config_max_conn;
     uint8_t  config_max_paired;
     uint16_t config_max_attr_len;
@@ -439,6 +440,7 @@ static const struct lib_ext_cfgs ext_cfgs = {
     /* BLE */
     .config_past_sender = CONFIG_BT_PER_ADV_SYNC_TRANSFER_SENDER,
     .config_past_receiver = CONFIG_BT_PER_ADV_SYNC_TRANSFER_RECEIVER,
+    .config_past_check = false,
     .config_max_conn = CONFIG_BT_MAX_CONN,
     .config_max_paired = CONFIG_BT_MAX_PAIRED,
     .config_max_attr_len = 251,
@@ -971,6 +973,12 @@ struct lib_ext_funcs {
     void (*_log_wrn)(const char *format, ...);
     void (*_log_err)(const char *format, ...);
 
+    /* Fatal assert: log + abort with tag/info/file/line/func context.
+     * Mirrors lib-side lib_ext_funcs._assert in init.h. ABI must match.
+     */
+    void (*_assert)(const char *tag, size_t info,
+                    const char *file, int line, const char *func);
+
     /* Memory */
     void *(*_malloc)(size_t size);
     void *(*_calloc)(size_t n, size_t size);
@@ -1180,11 +1188,29 @@ static void log_error(const char *format, ...)
 #endif /* (CONFIG_BT_AUDIO_LOG_LEVEL >= BT_ISO_LOG_ERROR) */
 }
 
+/* Fatal assert handler registered into lib_ext_funcs._assert.
+ * Always logged (no LOG_LEVEL gate) — this is the last message before
+ * abort, and the user needs the context to diagnose.
+ */
+static void assert_fatal(const char *tag, size_t info,
+                         const char *file, int line, const char *func)
+{
+    esp_log_write(ESP_LOG_ERROR, LEA_TAG,
+                  BT_ISO_LOG_COLOR_E
+                  "E (%lu) %s: LibAssert[%s][info=%u][%s:%d][%s]"
+                  BT_ISO_LOG_RESET_COLOR "\n",
+                  esp_log_timestamp(), LEA_TAG,
+                  tag, (unsigned)info, file, line, func);
+    abort();
+}
+
 static const struct lib_ext_funcs ext_funcs = {
     ._log_dbg = (void *)log_debug,
     ._log_inf = (void *)log_info,
     ._log_wrn = (void *)log_warn,
     ._log_err = (void *)log_error,
+
+    ._assert = (void *)assert_fatal,
 
     ._malloc = (void *)malloc,
     ._calloc = (void *)calloc,
@@ -2068,7 +2094,7 @@ int bt_le_audio_init(void)
     return bt_le_nimble_audio_init();
 }
 
-#if BLE_AUDIO_SVC_SEP_ADD
+#if BLE_AUDIO_SVC_DEFERRED_ADD
 #if CONFIG_BT_ASCS
 int bt_le_ascs_init(void)
 {
@@ -2140,7 +2166,7 @@ int bt_le_micp_mic_dev_init(void)
     return bt_le_nimble_micp_mic_dev_init();
 }
 #endif /* CONFIG_BT_MICP_MIC_DEV */
-#endif /* BLE_AUDIO_SVC_SEP_ADD */
+#endif /* BLE_AUDIO_SVC_DEFERRED_ADD */
 
 int bt_le_audio_start(void *info)
 {

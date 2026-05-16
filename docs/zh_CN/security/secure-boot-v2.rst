@@ -5,9 +5,9 @@
 
 :link_to_translation:`en:[English]`
 
-{IDF_TARGET_SBV2_SCHEME:default="RSA-PSS", esp32c2, esp32c61="ECDSA", esp32c6, esp32h2, esp32p4, esp32c5, esp32h21="RSA-PSS 或 ECDSA"}
+{IDF_TARGET_SBV2_SCHEME:default="RSA-PSS", esp32c2, esp32c61, esp32h4="ECDSA", esp32c6, esp32h2, esp32p4, esp32c5, esp32h21="RSA-PSS 或 ECDSA"}
 
-{IDF_TARGET_SBV2_KEY:default="RSA-3072", esp32c2, esp32c61="ECDSA-256", esp32c6, esp32h2, esp32p4, esp32h21="RSA-3072、ECDSA-256", esp32c5="RSA-3072、ECDSA-384、ECDSA-256"}
+{IDF_TARGET_SBV2_KEY:default="RSA-3072", esp32c2, esp32c61="ECDSA-256", esp32c6, esp32h2, esp32p4, esp32h21="RSA-3072、ECDSA-256", esp32h4="ECDSA-384、ECDSA-256", esp32c5="RSA-3072、ECDSA-384、ECDSA-256"}
 
 {IDF_TARGET_SECURE_BOOT_OPTION_TEXT:default="", esp32c6, esp32h2, esp32p4, esp32h21="推荐使用 RSA，其验证时间更短。可以在菜单中选择 RSA 或 ECDSA 方案。", esp32c5="推荐使用 ECDSA，其验证时间更短。可以在菜单中选择 RSA 或 ECDSA 方案。"}
 
@@ -25,7 +25,7 @@
 
 {IDF_TARGET_CPU_FREQ:default="", esp32c5="240 MHz", esp32c6="160 MHz", esp32h2="96 MHz", esp32p4="360 MHz"}
 
-{IDF_TARGET_SBV2_DEFAULT_SCHEME:default="RSA", esp32c2, esp32c61, esp32c5="ECDSA (v2)"}
+{IDF_TARGET_SBV2_DEFAULT_SCHEME:default="RSA", esp32c2, esp32c61, esp32c5, esp32h4="ECDSA (v2)"}
 
 {IDF_TARGET_EFUSE_WR_DIS_RD_DIS:default="ESP_EFUSE_WR_DIS_RD_DIS", esp32="ESP_EFUSE_WR_DIS_EFUSE_RD_DISABLE"}
 
@@ -74,7 +74,6 @@
 1. 一级 (ROM) 引导加载程序加载二级引导加载程序，并验证二级引导加载程序的 {IDF_TARGET_SBV2_SCHEME} 签名。验证通过后，方可运行二级引导加载程序。
 
 2. 二级引导加载程序加载特定应用程序镜像，并验证应用程序的 {IDF_TARGET_SBV2_SCHEME} 签名。若验证通过，则执行应用程序镜像。
-
 
 
 优势
@@ -273,7 +272,7 @@
           - 仅针对镜像内容的 SHA-256 哈希值，不包括签名块。
         * - 36
           - 1
-          - 曲线 ID。2 代表 NIST256p 曲线。
+          - 曲线 ID。2 表示 NIST256p 曲线。
         * - 37
           - 64
           - ECDSA 公钥：32 字节的 X 坐标，后跟 32 字节的 Y 坐标。
@@ -529,7 +528,6 @@ Secure Boot v2 签名验证也可以在 OTA 更新期间验证数据分区镜像
 - 一旦启用安全启动，就无法再对 eFuse 密钥进行读保护，这可以避免攻击者对存储公共密钥摘要的 eFuse 块进行读保护，进而导致系统无法验证和处理签名，系统服务无法正常运行。有关读保护密钥的更多信息，请参阅下方详细说明。
 
 
-
 烧录读保护密钥
 ~~~~~~~~~~~~~~
 
@@ -612,7 +610,6 @@ Secure Boot v2 签名验证也可以在 OTA 更新期间验证数据分区镜像
             openssl ecparam -name secp384r1 -genkey -noout -out my_secure_boot_signing_key.pem
 
 注意，安全启动系统的强度取决于能否保持签名密钥的私密性。
-
 
 .. _remote-sign-v2-image:
 
