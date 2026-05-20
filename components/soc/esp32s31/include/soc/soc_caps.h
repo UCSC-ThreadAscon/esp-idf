@@ -45,11 +45,12 @@
 #define SOC_TWAI_SUPPORTED              1
 #define SOC_TWAI_FD_SUPPORTED           1
 #define SOC_ETM_SUPPORTED               1
-// #define SOC_PARLIO_SUPPORTED            1      // TODO: [ESP32S31] IDF-14711
+#define SOC_PARLIO_SUPPORTED            1
+#define SOC_PARLIO_LCD_SUPPORTED        1
 #define SOC_ASYNC_MEMCPY_SUPPORTED      1
 #define SOC_USB_OTG_SUPPORTED           1
 // #define SOC_USB_SERIAL_JTAG_SUPPORTED   1      // TODO: [ESP32S31] IDF-14788
-// #define SOC_TEMP_SENSOR_SUPPORTED       1      // TODO: [ESP32S31] IDF-14799
+#define SOC_TEMP_SENSOR_SUPPORTED       1
 // #define SOC_SUPPORTS_SECURE_DL_MODE     1      // TODO: [ESP32S31] IDF-14629
 #define SOC_ULP_SUPPORTED               1
 #define SOC_LP_CORE_SUPPORTED           1
@@ -343,6 +344,15 @@
 #define SOC_TWAI_RANGE_FILTER_NUM           1U
 #define SOC_TWAI_SUPPORT_SLEEP_RETENTION    1
 
+/*-------------------------- PARLIO CAPS --------------------------------------*/
+#define SOC_PARLIO_TX_UNIT_MAX_DATA_WIDTH      16 /*!< Number of data lines of the TX unit */
+#define SOC_PARLIO_RX_UNIT_MAX_DATA_WIDTH      16 /*!< Number of data lines of the RX unit */
+#define SOC_PARLIO_TX_CLK_SUPPORT_GATING       1  /*!< Support gating TX clock */
+#define SOC_PARLIO_RX_CLK_SUPPORT_GATING       1  /*!< Support gating RX clock */
+#define SOC_PARLIO_TX_SUPPORT_LOOP_TRANSMISSION 1 /*!< Support loop transmission */
+#define SOC_PARLIO_SUPPORT_SLEEP_RETENTION     1  /*!< Support back up registers before sleep */
+#define SOC_PARLIO_SUPPORT_I80_LCD             1  /*!< Support to drive I80 interfaced LCD */
+
 /*-------------------------- AES CAPS ----------------------------------------*/
 #define SOC_AES_GDMA                            (1)
 #define SOC_AES_SUPPORT_DMA                     (1)
@@ -461,7 +471,7 @@
 #define SOC_TOUCH_MAX_CHAN_ID                       (13)    /*!< Touch maximum channel number */
 
 /* Touch Sensor Features */
-#define SOC_TOUCH_SUPPORT_SLEEP_WAKEUP              (0)     /*!< Touch sensor supports sleep awake */
+#define SOC_TOUCH_SUPPORT_SLEEP_WAKEUP              (1)     /*!< Touch sensor supports sleep awake */
 #define SOC_TOUCH_SUPPORT_BENCHMARK                 (1)     /*!< Touch sensor supports benchmark configuration */
 #define SOC_TOUCH_SUPPORT_WATERPROOF                (1)     /*!< Touch sensor supports waterproof */
 #define SOC_TOUCH_SUPPORT_PROX_SENSING              (1)     /*!< Touch sensor supports proximity sensing */
@@ -584,3 +594,10 @@
 
 /*---------------------------------- ASRC CAPS ----------------------------------*/
 #define SOC_ASRC_SUPPORTED (1)
+
+/*-------------------------- Temperature Sensor CAPS -------------------------------------*/
+#define SOC_TEMPERATURE_SENSOR_INTR_SUPPORT                  (1)
+#define SOC_TSENS_IS_INDEPENDENT_FROM_ADC                    (1)  /*!< Temperature sensor is a separate module, not share regs with ADC */
+#define SOC_TEMPERATURE_SENSOR_SUPPORT_ETM                   (1)
+// temperature sensor on esp32s31 in under low power domain.
+#define SOC_TEMPERATURE_SENSOR_SUPPORT_SLEEP_RETENTION       (1)
