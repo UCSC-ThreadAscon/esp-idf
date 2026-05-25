@@ -111,6 +111,10 @@ config SOC_TEMP_SENSOR_SUPPORTED
     bool
     default y
 
+config SOC_USB_SERIAL_JTAG_SUPPORTED
+    bool
+    default y
+
 config SOC_ULP_SUPPORTED
     bool
     default y
@@ -175,11 +179,23 @@ config SOC_SHA_SUPPORTED
     bool
     default y
 
+config SOC_HMAC_SUPPORTED
+    bool
+    default y
+
+config SOC_DIG_SIGN_SUPPORTED
+    bool
+    default y
+
 config SOC_ECC_SUPPORTED
     bool
     default y
 
 config SOC_ECC_EXTENDED_MODES_SUPPORTED
+    bool
+    default y
+
+config SOC_ECDSA_SUPPORTED
     bool
     default y
 
@@ -227,6 +243,10 @@ config SOC_PSRAM_DMA_CAPABLE
     bool
     default y
 
+config SOC_SDMMC_HOST_SUPPORTED
+    bool
+    default y
+
 config SOC_CLK_TREE_SUPPORTED
     bool
     default y
@@ -256,6 +276,10 @@ config SOC_SPI_FLASH_HAS_DEDICATED_LDO
     default y
 
 config SOC_TOUCH_SENSOR_SUPPORTED
+    bool
+    default y
+
+config SOC_GP_LDO_SUPPORTED
     bool
     default y
 
@@ -767,6 +791,34 @@ config SOC_MMU_PER_EXT_MEM_TARGET
     bool
     default y
 
+config SOC_SDMMC_USE_IOMUX
+    bool
+    default y
+
+config SOC_SDMMC_NUM_SLOTS
+    int
+    default 2
+
+config SOC_SDMMC_DATA_WIDTH_MAX
+    int
+    default 4
+
+config SOC_SDMMC_DELAY_PHASE_NUM
+    int
+    default 8
+
+config SOC_SDMMC_IO_UHS_POWER_EXTERNAL
+    bool
+    default y
+
+config SOC_SDMMC_PSRAM_DMA_CAPABLE
+    bool
+    default y
+
+config SOC_SDMMC_UHS_I_SUPPORTED
+    bool
+    default y
+
 config SOC_SPI_PERIPH_NUM
     int
     default 3
@@ -999,6 +1051,38 @@ config SOC_ECC_SUPPORT_CURVE_P384
     bool
     default y
 
+config SOC_ECDSA_SUPPORT_EXPORT_PUBKEY
+    bool
+    default y
+
+config SOC_ECDSA_SUPPORT_DETERMINISTIC_MODE
+    bool
+    default y
+
+config SOC_ECDSA_SUPPORT_HW_DETERMINISTIC_LOOP
+    bool
+    default y
+
+config SOC_ECDSA_SUPPORT_CURVE_P384
+    bool
+    default y
+
+config SOC_ECDSA_SUPPORT_CURVE_SPECIFIC_KEY_PURPOSES
+    bool
+    default y
+
+config SOC_DS_SIGNATURE_MAX_BIT_LEN
+    int
+    default 4096
+
+config SOC_DS_KEY_PARAM_MD_IV_LENGTH
+    int
+    default 16
+
+config SOC_DS_KEY_CHECK_MAX_WAIT_US
+    int
+    default 1100
+
 config SOC_EFUSE_DIS_PAD_JTAG
     bool
     default y
@@ -1031,7 +1115,27 @@ config SOC_EFUSE_ECDSA_KEY_P384
     bool
     default y
 
+config SOC_HUK_SUPPORTED
+    bool
+    default y
+
+config SOC_KEY_MANAGER_SUPPORTED
+    bool
+    default y
+
+config SOC_KEY_MANAGER_SUPPORT_KEY_DEPLOYMENT
+    bool
+    default y
+
 config SOC_KEY_MANAGER_ECDSA_KEY_DEPLOY
+    bool
+    default y
+
+config SOC_KEY_MANAGER_HMAC_KEY_DEPLOY
+    bool
+    default y
+
+config SOC_KEY_MANAGER_DS_KEY_DEPLOY
     bool
     default y
 
@@ -1560,6 +1664,10 @@ config SOC_I2S_SUPPORTS_RX_RECOMB
     default y
 
 config SOC_I2S_SUPPORTS_TDM
+    bool
+    default y
+
+config SOC_I2S_SUPPORTS_BT_DEST
     bool
     default y
 
