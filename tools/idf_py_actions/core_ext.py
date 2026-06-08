@@ -15,8 +15,8 @@ from urllib.request import Request
 from urllib.request import urlopen
 from webbrowser import open_new_tab
 
-import click
-from click.core import Context
+import rich_click as click
+from rich_click import Context
 
 from idf_py_actions.constants import GENERATORS
 from idf_py_actions.constants import PREVIEW_TARGETS
@@ -174,7 +174,7 @@ def action_extensions(base_actions: dict, project_path: str) -> Any:
             os.environ.pop('ESP_IDF_KCONFIG_MIN_LABELS', None)
         build_target(target_name, ctx, args)
 
-    def refresh_config(action: str, ctx: click.core.Context, args: PropertyDict, policy: str) -> None:
+    def refresh_config(action: str, ctx: Context, args: PropertyDict, policy: str) -> None:
         ensure_build_directory(args, ctx.info_name)
         run_target('refresh-config', args=args, env={'KCONFIG_DEFAULTS_POLICY': policy}, interactive=True)
 
@@ -529,6 +529,13 @@ def action_extensions(base_actions: dict, project_path: str) -> Any:
                 'is_flag': True,
                 'envvar': 'IDF_CCACHE_ENABLE',
                 'default': False,
+            },
+            {
+                'names': ['--configdep/--no-configdep'],
+                'help': 'Use configdep wrapper to optimize rebuild process. Enabled by default.',
+                'is_flag': True,
+                'envvar': 'IDF_CONFIGDEP_ENABLE',
+                'default': True,
             },
             {
                 'names': ['-G', '--generator'],

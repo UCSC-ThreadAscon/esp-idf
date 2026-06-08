@@ -110,6 +110,7 @@
 #define SOC_REGI2C_SUPPORTED            1
 #define SOC_JPEG_CODEC_SUPPORTED        1
 #define SOC_EMAC_SUPPORTED              1
+#define SOC_SPI_EXTERNAL_NOR_FLASH_SUPPORTED    1
 
 /*-------------------------- EMAC CAPS ----------------------------------------*/
 #define SOC_EMAC_SUPPORT_1000M                     (1)      /*!< EMAC Supports 1000Mbps mode */
@@ -141,22 +142,15 @@
 /*!< SAR ADC Module*/
 #define SOC_ADC_DIG_CTRL_SUPPORTED              1
 #define SOC_ADC_PERIPH_NUM                      (2)
-#define SOC_ADC_MAX_CHANNEL_NUM                 (8)
 #define SOC_ADC_CHANNEL_NUM(PERIPH_NUM)         (8)
 #define SOC_ADC_ATTEN_NUM                       (1U)
-#define SOC_ADC_RTC_MIN_BITWIDTH                (17)
-#define SOC_ADC_RTC_MAX_BITWIDTH                (17)
 
 #define SOC_ADC_DMA_SUPPORTED                   1
-#define SOC_ADC_DIGI_CONTROLLER_NUM             (2)
 #define SOC_ADC_PATT_LEN_MAX                    (16)
 #define SOC_ADC_DIGI_MIN_BITWIDTH               (17)
 #define SOC_ADC_DIGI_MAX_BITWIDTH               (17)
 #define SOC_ADC_DIGI_RESULT_BYTES               (4)
 #define SOC_ADC_DIGI_DATA_BYTES_PER_CONV        (4)
-#define SOC_ADC_DIG_SUPPORTED_UNIT(UNIT)        (1)
-#define SOC_ADC_SAMPLE_FREQ_THRES_HIGH          (83333U)
-#define SOC_ADC_SAMPLE_FREQ_THRES_LOW           (611U)
 #define SOC_ADC_DIGI_MONITOR_NUM                (2)
 
 #define SOC_ADC_DIFF_SUPPORTED                  (1)
@@ -277,6 +271,9 @@
 #define SOC_LEDC_FADE_PARAMS_BIT_WIDTH      (10)
 #define SOC_LEDC_SUPPORT_SLEEP_RETENTION    (1)
 #define SOC_LEDC_SUPPORT_ETM                (1)
+
+/*-------------------------- LDO CAPS ----------------------------------------*/
+#define SOC_GP_LDO_NUM_UNITS                1U    // Number of general purpose LDO units
 
 /*--------------------------- RMT CAPS ---------------------------------------*/
 #define SOC_RMT_MEM_WORDS_PER_CHANNEL         48 /*!< Each channel owns 48 words memory (1 word = 4 Bytes) */

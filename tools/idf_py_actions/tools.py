@@ -16,7 +16,7 @@ from typing import Any
 from typing import TextIO
 from typing import cast
 
-import click
+import rich_click as click
 import yaml
 from esp_idf_monitor import get_ansi_converter
 
@@ -788,6 +788,7 @@ def ensure_build_directory(
     cache = _parse_cmakecache(cache_path) if os.path.exists(cache_path) else {}
 
     args.define_cache_entry.append(f'CCACHE_ENABLE={args.ccache}')
+    args.define_cache_entry.append(f'CONFIGDEP_ENABLE={args.configdep}')
 
     cache_cmdl = _parse_cmdl_cmakecache(args.define_cache_entry)
 
