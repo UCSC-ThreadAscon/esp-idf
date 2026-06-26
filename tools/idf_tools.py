@@ -2748,13 +2748,6 @@ def action_install_python_env(args):  # type: ignore
             # Reinstallation of the virtual environment could help if pip was installed for the main Python
             reinstall = True
 
-        if sys.platform != 'win32':
-            try:
-                subprocess.check_call([virtualenv_python, '-c', 'import curses'], stdout=sys.stdout, stderr=sys.stderr)
-            except subprocess.CalledProcessError:
-                warn('curses can not be imported, new virtual environment will be created.')
-                reinstall = True
-
     if reinstall and os.path.exists(idf_python_env_path):
         warn(f'Removing the existing Python environment in {idf_python_env_path}')
         shutil.rmtree(idf_python_env_path)
@@ -3015,6 +3008,10 @@ def action_add_version(args: Any) -> None:
     )
     updated_tools = []
     for file_size, file_sha256, file_name in checksum_info:
+        skip_files = ['debug-sections', 'esp8266-multilib']
+        if any(skip_file in file_name for skip_file in skip_files):
+            continue
+
         xz_file = file_name.replace('.tar.gz', '.tar.xz')
         if xz_file in updated_tools:
             # .tar.xz archives are preferable, but .tar.gz is needed, for example, when using PlatformIO

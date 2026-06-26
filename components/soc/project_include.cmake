@@ -7,17 +7,18 @@ if(CONFIG_IDF_TOOLCHAIN_GCC)
         idf_toolchain_add_flags(COMPILE_OPTIONS "-Wno-frame-address")
     elseif(CONFIG_IDF_TARGET_ESP32C2 OR
            CONFIG_IDF_TARGET_ESP32C3)
-        set(_march "rv32imc_zicsr_zifencei")
+        set(_march "rv32imc")
     elseif(CONFIG_IDF_TARGET_ESP32C5 OR
            CONFIG_IDF_TARGET_ESP32C6 OR
            CONFIG_IDF_TARGET_ESP32C61 OR
            CONFIG_IDF_TARGET_ESP32H2 OR
            CONFIG_IDF_TARGET_ESP32H21)
-        set(_march "rv32imac_zicsr_zifencei_zaamo_zalrsc")
-    elseif(CONFIG_IDF_TARGET_ESP32H4)
-        set(_march "rv32imafcb_zicsr_zifencei_zaamo_zalrsc")
+        set(_march "rv32imac")
+    elseif(CONFIG_IDF_TARGET_ESP32H4 OR
+           (CONFIG_IDF_TARGET_ESP32P4 AND NOT CONFIG_ESP32P4_SELECTS_REV_LESS_V3))
+        set(_march "rv32imafcb")
     elseif(CONFIG_IDF_TARGET_ESP32P4 OR CONFIG_IDF_TARGET_ESP32S31)
-        set(_march "rv32imafc_zicsr_zifencei_zaamo_zalrsc")
+        set(_march "rv32imafc")
     elseif(NOT(CONFIG_IDF_TARGET_ESP32S2 OR CONFIG_IDF_TARGET_ESP32S3))
         message(FATAL_ERROR "Unknown Espressif target: ${CONFIG_IDF_TARGET}")
     endif()
@@ -35,12 +36,11 @@ if(CONFIG_IDF_TOOLCHAIN_GCC)
 
         # Clean compile options that were added by previous configurations and may be outdated
         idf_toolchain_remove_flags(COMPILE_OPTIONS "-march="
+                                                   "-mtune="
                                                    "-mno-cm-push-reverse"
                                                    "-mno-cm-popret")
 
-        if(CONFIG_SOC_CPU_HAS_ZB_EXTENSIONS)
-            set(_march "${_march}_zba_zbb_zbs")
-        endif()
+        set(_march "${_march}_zicsr_zifencei")
 
         if((CONFIG_SOC_CPU_HAS_ZC_EXTENSIONS AND NOT CONFIG_SOC_CPU_ZCMP_WORKAROUND) OR
            CONFIG_COMPILER_ENABLE_RISCV_ZCMP)
@@ -78,7 +78,12 @@ if(CONFIG_IDF_TOOLCHAIN_GCC)
         idf_toolchain_add_flags(COMPILE_OPTIONS "-march=${_march}")
 
         if(NOT CONFIG_SOC_CPU_MISALIGNED_ACCESS_ON_PMP_MISMATCH_ISSUE)
-            idf_toolchain_add_flags(COMPILE_OPTIONS "-mtune=esp-base")
+            check_c_compiler_flag("-mtune=${CONFIG_IDF_TARGET}" COMPILER_SUPPORTS_MTUNE_${CONFIG_IDF_TARGET})
+            if(COMPILER_SUPPORTS_MTUNE_${CONFIG_IDF_TARGET})
+                idf_toolchain_add_flags(COMPILE_OPTIONS "-mtune=${CONFIG_IDF_TARGET}")
+            else()
+                idf_toolchain_add_flags(COMPILE_OPTIONS "-mtune=esp-base")
+            endif()
         endif()
         idf_toolchain_rerun_abi_detection()
     else()

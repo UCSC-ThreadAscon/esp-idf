@@ -391,6 +391,10 @@ config SOC_USB_UTMI_PHY_NUM
     int
     default 1
 
+config SOC_PM_SUPPORT_USB_WAKEUP
+    int
+    default 1
+
 config SOC_PHY_SUPPORTED
     bool
     default y
@@ -484,6 +488,10 @@ config SOC_CPU_INTR_NUM
     default 32
 
 config SOC_CPU_HAS_FLEXIBLE_INTC
+    bool
+    default y
+
+config SOC_CPU_SUPPORT_WFE
     bool
     default y
 
@@ -1480,6 +1488,10 @@ config SOC_PM_SUPPORT_MAC_BB_PD
     default y
 
 config SOC_PM_SUPPORT_MODEM_CLOCK_DOMAIN_ICG
+    bool
+    default y
+
+config SOC_PM_SUPPORT_PMU_CLK_ICG
     bool
     default y
 

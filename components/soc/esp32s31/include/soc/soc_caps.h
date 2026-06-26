@@ -129,6 +129,7 @@
 #define SOC_USB_OTG_PERIPH_NUM          (1U)
 #define SOC_USB_FSLS_PHY_NUM            (0U)
 #define SOC_USB_UTMI_PHY_NUM            (1U)
+#define SOC_PM_SUPPORT_USB_WAKEUP       (1U)
 
 #define SOC_PHY_SUPPORTED                1
 #define SOC_WIFI_SUPPORTED               1
@@ -167,6 +168,7 @@
 #define SOC_CPU_CORES_NUM               (2U)
 #define SOC_CPU_INTR_NUM                32
 #define SOC_CPU_HAS_FLEXIBLE_INTC       1
+#define SOC_CPU_SUPPORT_WFE             1
 #define SOC_INT_CLIC_SUPPORTED          1
 #define SOC_INT_HW_NESTED_SUPPORTED     1       // Support for hardware interrupts nesting
 #define SOC_BRANCH_PREDICTOR_SUPPORTED  1
@@ -551,6 +553,8 @@
 #define SOC_PM_SUPPORT_MAC_BB_PD        (1)
 
 #define SOC_PM_SUPPORT_MODEM_CLOCK_DOMAIN_ICG      (1)
+
+#define SOC_PM_SUPPORT_PMU_CLK_ICG                 (1)
 
 #define SOC_PM_SUPPORT_DEEPSLEEP_CHECK_STUB_ONLY   (1) /*!<Supports CRC only the stub code in RTC memory */
 

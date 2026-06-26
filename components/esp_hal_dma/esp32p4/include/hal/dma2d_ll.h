@@ -88,6 +88,7 @@
 #define DMA2D_LL_CHANNEL_PERIPH_SEL_BIT_WIDTH      (3)
 
 #define DMA2D_LL_DESC_ALIGNMENT 8 // Descriptor must be aligned to 8 bytes
+#define DMA2D_LL_DESC_2D_FIELD_MAX 0x3FFFU // 2D descriptor width/height/coordinate fields are 14-bit
 
 #ifdef __cplusplus
 extern "C" {
@@ -110,7 +111,7 @@ extern const int dma2d_csc_param_rgb2yuv_bt709_table[3][4];
  * @param group_id Group ID
  * @param enable True to enable; false to disable
  */
-static inline void dma2d_ll_enable_bus_clock(int group_id, bool enable)
+static inline void _dma2d_ll_enable_bus_clock(int group_id, bool enable)
 {
     (void)group_id;
     HP_SYS_CLKRST.soc_clk_ctrl1.reg_dma2d_sys_clk_en = enable;
@@ -120,7 +121,7 @@ static inline void dma2d_ll_enable_bus_clock(int group_id, bool enable)
 /// the critical section needs to declare the __DECLARE_RCC_ATOMIC_ENV variable in advance
 #define dma2d_ll_enable_bus_clock(...) do { \
         (void)__DECLARE_RCC_ATOMIC_ENV; \
-        dma2d_ll_enable_bus_clock(__VA_ARGS__); \
+        _dma2d_ll_enable_bus_clock(__VA_ARGS__); \
     } while(0)
 
 /**
@@ -128,7 +129,7 @@ static inline void dma2d_ll_enable_bus_clock(int group_id, bool enable)
  *
  * @param group_id Group ID
  */
-static inline void dma2d_ll_reset_register(int group_id)
+static inline void _dma2d_ll_reset_register(int group_id)
 {
     (void)group_id;
     HP_SYS_CLKRST.hp_rst_en0.reg_rst_en_dma2d = 1;
@@ -139,7 +140,7 @@ static inline void dma2d_ll_reset_register(int group_id)
 /// the critical section needs to declare the __DECLARE_RCC_ATOMIC_ENV variable in advance
 #define dma2d_ll_reset_register(...) do { \
         (void)__DECLARE_RCC_ATOMIC_ENV; \
-        dma2d_ll_reset_register(__VA_ARGS__); \
+        _dma2d_ll_reset_register(__VA_ARGS__); \
     } while(0)
 
 /**

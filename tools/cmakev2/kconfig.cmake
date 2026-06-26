@@ -208,6 +208,10 @@ function(__generate_sdkconfig)
     # Generate Kconfig outputs
     __generate_kconfig_outputs()
 
+    # Mirror CONFIG_* values onto build properties so
+    # `idf_build_get_property(var CONFIG_FOO)` keeps working.
+    __import_sdkconfig_as_build_properties()
+
     idf_msg("Generated sdkconfig configuration")
 endfunction()
 
@@ -875,10 +879,12 @@ function(idf_create_menuconfig executable)
 
     if(_menuconfig_inline_ok)
         add_custom_target("${ARG_TARGET}"
+            # Ensure kconfig.in and kconfig_projbuild.in are present and up to date.
+            # This is not necessary under normal circumstances, but if the files are manually removed,
+            # it may be possible to regenerate them.
             COMMAND ${python} "${idf_path}/tools/kconfig_new/prepare_kconfig_files.py"
             --list-separator=semicolon
             --env-file "${config_env_dir}/config.env"
-            COMMAND ${python} "${idf_path}/tools/check_term.py"
             COMMAND ${CMAKE_COMMAND} -E env
             "COMPONENT_KCONFIGS_SOURCE_FILE=${config_env_dir}/kconfigs.in"
             "COMPONENT_KCONFIGS_PROJBUILD_SOURCE_FILE=${config_env_dir}/kconfigs_projbuild.in"
@@ -906,6 +912,9 @@ function(idf_create_menuconfig executable)
         message(WARNING "esp-idf-kconfig >= ${MENUCONFIG_INLINE_MIN_KCONFIG_VERSION} is required "
             "for the optimised menuconfig target. Please update your Python packages by re-running the install script.")
         add_custom_target("${ARG_TARGET}"
+            # Ensure kconfig.in and kconfig_projbuild.in are present and up to date.
+            # This is not necessary under normal circumstances, but if the files are manually removed,
+            # it may be possible to regenerate them.
             COMMAND ${python} "${idf_path}/tools/kconfig_new/prepare_kconfig_files.py"
             --list-separator=semicolon
             --env-file "${config_env_dir}/config.env"
@@ -918,7 +927,6 @@ function(idf_create_menuconfig executable)
             --dont-write-deprecated
             --output config "${sdkconfig}"
             --env-file "${config_env_dir}/config.env"
-            COMMAND ${python} "${idf_path}/tools/check_term.py"
             COMMAND ${CMAKE_COMMAND} -E env
             "COMPONENT_KCONFIGS_SOURCE_FILE=${config_env_dir}/kconfigs.in"
             "COMPONENT_KCONFIGS_PROJBUILD_SOURCE_FILE=${config_env_dir}/kconfigs_projbuild.in"

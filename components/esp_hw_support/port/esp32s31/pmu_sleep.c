@@ -174,6 +174,11 @@ static inline pmu_sleep_param_config_t * pmu_sleep_param_config_default(
     param->hp_sys.isolate_wait_cycle              = rtc_time_us_to_fastclk(mc->hp.isolate_wait_time_us, fastclk_period);
     param->hp_sys.reset_wait_cycle                = rtc_time_us_to_fastclk(mc->hp.reset_wait_time_us, fastclk_period);
 
+    const int hw_wait_time_us = pmu_sleep_calculate_hw_wait_time(sleep_flags, slowclk_src, slowclk_period, fastclk_period);
+    const int modem_state_skip_time_us = mc->hp.regdma_m2a_work_time_us + mc->hp.system_dfs_up_work_time_us + mc->lp.min_slp_time_us;
+    const int modem_wakeup_wait_time_us = adjustment - hw_wait_time_us + modem_state_skip_time_us + mc->hp.regdma_rf_on_work_time_us;
+    param->hp_sys.modem_wakeup_wait_cycle         = rtc_time_us_to_fastclk(modem_wakeup_wait_time_us, fastclk_period);
+
     param->lp_sys.min_slp_slow_clk_cycle          = rtc_time_us_to_slowclk(mc->lp.min_slp_time_us, slowclk_period_fixed);
     param->lp_sys.analog_wait_target_cycle        = rtc_time_us_to_slowclk(mc->lp.analog_wait_time_us, slowclk_period);
     param->lp_sys.digital_power_supply_wait_cycle = rtc_time_us_to_fastclk(mc->lp.power_supply_wait_time_us, fastclk_period);
@@ -192,7 +197,7 @@ static inline pmu_sleep_param_config_t * pmu_sleep_param_config_default(
 const pmu_sleep_config_t* pmu_sleep_config_default(
         pmu_sleep_config_t *config,
         uint32_t sleep_flags,
-        uint32_t clk_flags,
+        pmu_sleep_clk_icg_flags_t clk_flags,
         uint32_t adjustment,
         soc_rtc_slow_clk_src_t slowclk_src,
         uint32_t slowclk_period,
@@ -212,7 +217,7 @@ const pmu_sleep_config_t* pmu_sleep_config_default(
         config->analog = analog_default;
     } else {
         // Get light sleep digital_default
-        pmu_sleep_digital_config_t digital_default = PMU_SLEEP_DIGITAL_LSLP_CONFIG_DEFAULT(sleep_flags);
+        pmu_sleep_digital_config_t digital_default = PMU_SLEEP_DIGITAL_LSLP_CONFIG_DEFAULT(sleep_flags, clk_flags);
         config->digital = digital_default;
 
         // Get light sleep analog default
@@ -281,6 +286,10 @@ static void pmu_sleep_power_init(pmu_context_t *ctx, const pmu_sleep_power_confi
 
 static void pmu_sleep_digital_init(pmu_context_t *ctx, const pmu_sleep_digital_config_t *dig)
 {
+    const bool icg_func_enabled = (dig->icg_func.clock[0] != 0) || (dig->icg_func.clock[1] != 0);
+    pmu_ll_hp_set_icg_sysclk_enable(ctx->hal->dev, HP(SLEEP), icg_func_enabled);
+    pmu_ll_hp_set_icg_func(ctx->hal->dev, HP(SLEEP), dig->icg_func.clock[0], dig->icg_func.clock[1]);
+    pmu_ll_hp_set_icg_apb(ctx->hal->dev, HP(SLEEP), dig->icg_apb.clock[0], dig->icg_apb.clock[1]);
     pmu_ll_hp_set_dig_pad_slp_sel   (ctx->hal->dev, HP(SLEEP), dig->syscntl.dig_pad_slp_sel);
     pmu_ll_hp_set_hold_all_hp_pad   (ctx->hal->dev, HP(SLEEP), dig->syscntl.hp_pad_hold_all);
     pmu_ll_hp_set_hold_all_lp_pad   (ctx->hal->dev, HP(SLEEP), dig->syscntl.lp_pad_hold_all);
@@ -326,6 +335,7 @@ static void pmu_sleep_param_init(pmu_context_t *ctx, const pmu_sleep_param_confi
     pmu_hal_hp_set_control_ready_wait_cycle(ctx->hal, param->hp_sys.isolate_wait_cycle, param->hp_sys.reset_wait_cycle);
     pmu_hal_lp_set_control_ready_wait_cycle(ctx->hal, param->lp_sys.isolate_wait_cycle, param->lp_sys.reset_wait_cycle);
 
+    pmu_ll_set_modem_wait_target_cycle(ctx->hal->dev, param->hp_sys.modem_wakeup_wait_cycle);
     pmu_ll_set_xtal_stable_wait_cycle(ctx->hal->dev, param->hp_lp.xtal_stable_wait_slow_clk_cycle);
     pmu_ll_set_pll_stable_wait_cycle(ctx->hal->dev, param->hp_sys.pll_stable_wait_cycle);
 }

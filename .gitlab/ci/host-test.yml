@@ -91,6 +91,14 @@ test_partition_table_on_host:
     - cd components/partition_table/test_gen_esp32part_host
     - pytest_for_ut ./gen_esp32part_tests.py
 
+test_blockdev_ioctl_overlap_checker:
+  extends:
+    - .host_test_template
+    - .rules:build:check
+  script:
+    - cd components/esp_blockdev/test
+    - pytest_for_ut ./test_check_ioctl_overlap.py
+
 test_ldgen_on_host:
   extends:
   - .host_test_template
@@ -239,6 +247,13 @@ test_transport_on_host:
     - cd ${IDF_PATH}/components/tcp_transport/host_test
     - idf.py build
     - LSAN_OPTIONS=verbosity=1:log_threads=1 build/host_tcp_transport_test.elf
+
+test_vfs_on_host:
+  extends: .host_test_template
+  script:
+    - cd ${IDF_PATH}/components/vfs/host_test
+    - idf.py build
+    - LSAN_OPTIONS=verbosity=1:log_threads=1 build/vfs_linux_test.elf
 
 test_sockets_on_host:
   extends: .host_test_template
